@@ -1,1 +1,1 @@
-Local conflict
+Merged changes
