@@ -1,10 +1,10 @@
-*Licenses
+# Licenses
 By default, no license means that Intellectual Property laws apply. In other words, you have a say in what other people do with your repository.
 
-**Proprietary Licenses
+## Proprietary Licenses
 Disallows legal rights to use, modify or distribute source code.
 
-**Copyleft Licenses
+## Copyleft Licenses
 Gives others legal rights to use, modify or distribute source code according to the license
 All derivative works must preserve the same rights
 Source code must be disclosed
@@ -22,7 +22,7 @@ Source code must be disclosed
     - May include proprietary components
     - Some changes must be stated
 
-**Permissive Open Source Licenses
+## Permissive Open Source Licenses
 Allows derivative works to carry different terms
 Source code disclosure is not required
 This allows proprietary software to be developed from source code with a permissive license
