@@ -48,4 +48,8 @@ This allows proprietary software to be developed from source code with a permiss
 
 Provide storage, processing, and memory resources. They can be created from pre-built images containing software and configuration.
 
+# DNS and Caddy
+
+Name Servers *must* match between Hosted Zone and Domain registration. Caddy dynamically generates any missing certificates through Let's Encrypt, enabling a TLS handshake and a secure connection.
+
 See also [README](README.md)
