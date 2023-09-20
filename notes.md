@@ -44,4 +44,8 @@ This allows proprietary software to be developed from source code with a permiss
     - Requires users to state significant changes to the software (source code not necessary)
     - Include original copyright and license notice
 
+# EC2 Servers
+
+Provide storage, processing, and memory resources. They can be created from pre-built images containing software and configuration.
+
 See also [README](README.md)
