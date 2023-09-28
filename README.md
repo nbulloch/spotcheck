@@ -37,3 +37,15 @@ A possible database scheme for storing users and music:
 - **Login** - Check user input against stored users. Only allow *valid* passwords.
 - **WebSocket** - Push realtime alerts for new music. Possibly display server commands and asynchronous check progress.
 - **React** - Port web app to React framework.
+
+## HTML Deliverable
+
+Built an HTML structure for the Spot Check web app
+
+- **Pages** - Created three HTML pages for: login, viewing new music, and managing artist subscritions
+- **Links** - Navigation between pages is included in each header
+- **Database** - Each album and artist is represented textually with dummy data representing a database
+- **Images** - Created a favicon
+- **Login** - Username and password inputs provided. Placeholder login button links to the music page
+- **WebSocket** - Placeholder text representing a log of real-time server activity. Showing notification of new albums as a superscript on the 'Music' link
+
