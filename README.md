@@ -44,8 +44,10 @@ Built an HTML structure for the Spot Check web app
 
 - **Pages** - Created three HTML pages for: login, viewing new music, and managing artist subscritions
 - **Links** - Navigation between pages is included in each header
-- **Database** - Each album and artist is represented textually with dummy data representing a database
+- **Text** - Text provided for tables and input labels
+- **Services** - Placeholder artist search in Manage page's subscription select box
 - **Images** - Created a favicon
 - **Login** - Username and password inputs provided. Placeholder login button links to the music page
+- **Database** - Each album and artist is represented textually with dummy data representing a database
 - **WebSocket** - Placeholder text representing a log of real-time server activity. Showing notification of new albums as a superscript on the 'Music' link
 
