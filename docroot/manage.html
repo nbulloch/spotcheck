@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <head>
     <title>Spot Check</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
 </head>
 <body>
     <header>
@@ -14,7 +15,45 @@
         <hr>
     </header>
     <main>
-        Content
+        <div class="col-4">
+            <div>
+                <button>Search</button>
+            </div>
+            <div>
+                <input type="text" value="Muse"></input>
+            </div>
+            <div>
+                <select size=4>
+                    <option value="">--Select an Artist--</option>
+                    <option>Muse</option>
+                    <option>Museek</option>
+                    <option>Veridia</option>
+                </select>
+            </div>
+            <div>
+                <button>Subscribe</button>
+            </div>
+        </div>
+        <hr>
+        <div class="col-8">
+            <div class="right-justified">
+                <button>Unsubscribe</button>
+            </div>
+            <table id="music-table">
+                <tr>
+                    <td>Artist</td>
+                    <td>Albums Checked</td>
+                </tr>
+                <tr>
+                    <td>Muse</td>
+                    <td>5 of 10</td>
+                </tr>
+                <tr>
+                    <td>Imagine Dragons *selected*</td>
+                    <td>8 of 9</td>
+                </tr>
+            </table>
+        </div>
     </main>
     <footer>
         <hr>
