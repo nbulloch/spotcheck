@@ -57,7 +57,7 @@ Styled each page to provide responsive layout and modern design.
 
 - **Layout** - Pages have a uniform header, footer, and main content area
 - **Navigation** - Split navigation pattern with the username on the right
-- **Responsive** - Footer is hidden for short viewports and the controls are only displayed in an aside for wide viewports
+- **Responsive** - Footer is hidden for short viewports and the controls are only displayed in an aside for wide viewports. Adapt to dark mode by changing --theme-bg
 - **Application** - Represented tables as styled DataTables (selection is already enabled)
 - **Text** - Loaded iosevka font to style text content. Placeholders are provided for interactive content
 - **Images** - Displayed the logo as a superscript on the login page
