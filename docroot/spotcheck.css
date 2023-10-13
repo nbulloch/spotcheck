@@ -1,11 +1,26 @@
+@font-face {
+    font-family: "iosevka";
+    src: local("iosevka"), url("iosevka-regular.ttc");
+}
+
 :root {
     --theme-bg: #b2d7bf;
     --theme-trim: #626262;
-    --theme-primary: #1ed760;
+    --theme-primary: #1ed760; /* BS green #28a745 */
 }
 
 * {
+    font-family: "iosevka";
     box-sizing: border-box;
+}
+
+.notify {
+    padding: 1px;
+    border-radius: 3px;
+
+    background-color: var(--theme-primary);
+    border-color: gray;
+    color: white;
 }
 
 .navbar {
@@ -17,6 +32,10 @@
 .navbar > * {
     flex: 0 15ch;
     text-align: center;
+}
+
+header .navbar {
+    font-weight: bold;
 }
 
 :is(header, footer) a {
@@ -38,22 +57,46 @@
     }
 }
 
+@media (max-heigth: 500px) {
+    footer {
+        display: none;
+    }
+}
+
 body {
     margin: 0px;
     height: 100vh;
 
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-rows: 30px 1fr 30px;
 
     background-color: var(--theme-bg);
 }
 
 main {
-    flex: 1;
+    display: contents;
 }
 
 header, footer {
     flex: 0 30px;
     color: white;
     background-color: var(--theme-trim);
+}
+
+button {
+    color: inherit;
+    background-color: transparent;
+
+    padding: 5px;
+
+    border-radius: 8px;
+    border: 2px solid var(--theme-primary);
+}
+
+button:hover {
+    background-color: var(--theme-primary);
+}
+
+input, button {
+    margin: 5px;
 }

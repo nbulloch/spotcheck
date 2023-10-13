@@ -1,0 +1,15 @@
+.login {
+    place-self: center;
+    text-align: center;
+
+    padding: 15px;
+    border-radius: 10px;
+
+    box-shadow: 2px 2px 10px black;
+    background-color: var(--theme-trim);
+    color: white;
+}
+
+.login h1 {
+    margin: 15px 0;
+}
