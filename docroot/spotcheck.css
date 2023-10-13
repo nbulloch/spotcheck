@@ -89,7 +89,7 @@ button {
 }
 
 button:hover {
-    background-color: var(--theme-primary);
+    background-color: var(--theme-primary) !important;
 }
 
 input, button {

@@ -4,7 +4,23 @@
         <title>SpotCheck</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+
+        <link rel="stylesheet" href="https://cdn.datatables.net/v/dt/jq-3.7.0/dt-1.13.6/sl-1.7.0/datatables.min.css"></link>
         <link rel="stylesheet" href="spotcheck.css"></link>
+        <link rel="stylesheet" href="layout.css"></link>
+        <link rel="stylesheet" href="manage.css"></link>
+
+        <script src="https://cdn.datatables.net/v/dt/jq-3.7.0/dt-1.13.6/sl-1.7.0/datatables.min.js"></script>
+        <script>
+            $(document).ready( function () {
+                let table = $('#manage-table').DataTable({
+                    pagingType: 'simple',
+                    select: true,
+                    info: false,
+                    order: []
+                });
+            });
+        </script>
     </head>
     <body>
         <header>
@@ -15,7 +31,7 @@
             </nav>
         </header>
         <main>
-            <div class="col-4">
+            <div class="aside">
                 <div>
                     <button>Search</button>
                 </div>
@@ -33,28 +49,31 @@
                 <div>
                     <button>Subscribe</button>
                 </div>
-            </div>
-            <hr>
-            <div class="col-8">
-                <div class="right-justified">
+                <hr>
+                <div>
                     <button>Unsubscribe</button>
                 </div>
-                <table id="music-table">
-                    <tr>
-                        <td>Artist</td>
-                        <td>Albums Checked</td>
-                    </tr>
-                    <tr>
-                        <td>Muse</td>
-                        <td>5 of 10</td>
-                    </tr>
-                    <tr>
-                        <td>Imagine Dragons *selected*</td>
-                        <td>8 of 9</td>
-                    </tr>
+            </div>
+            <div>
+                <table id="manage-table">
+                    <thead>
+                        <tr>
+                            <td>Artist</td>
+                            <td>Albums Checked</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Muse</td>
+                            <td>5 of 10</td>
+                        </tr>
+                        <tr>
+                            <td>Imagine Dragons</td>
+                            <td>8 of 9</td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
-            <hr>
             <div class="console">
                 Starting spot check...
                 <br>
