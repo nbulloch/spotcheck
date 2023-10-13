@@ -1,66 +1,69 @@
 <!DOCTYPE html>
-<head>
-    <title>SpotCheck</title>
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
-    <link rel="stylesheet" href="spotcheck.css"></link>
-</head>
-<body>
-    <header>
-        <nav class="navbar">
-            <a href="music.html">Music<sup class="notify">2</sup></a>
-            <a href="manage.html">Manage</a>
-            <a class="nav-split" href="index.html">*Username*</a>
-        </nav>
-    </header>
-    <main>
-        <div class="col-4">
-            <div>
-                <button>Search</button>
+<html lang="en">
+    <head>
+        <title>SpotCheck</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+        <link rel="stylesheet" href="spotcheck.css"></link>
+    </head>
+    <body>
+        <header>
+            <nav class="navbar">
+                <a href="music.html">Music<sup class="notify">2</sup></a>
+                <a href="manage.html">Manage</a>
+                <a class="nav-split" href="index.html">*Username*</a>
+            </nav>
+        </header>
+        <main>
+            <div class="col-4">
+                <div>
+                    <button>Search</button>
+                </div>
+                <div>
+                    <input type="text" value="Muse"></input>
+                </div>
+                <div>
+                    <select size=4>
+                        <option value="">--Select an Artist--</option>
+                        <option>Muse</option>
+                        <option>Museek</option>
+                        <option>Veridia</option>
+                    </select>
+                </div>
+                <div>
+                    <button>Subscribe</button>
+                </div>
             </div>
-            <div>
-                <input type="text" value="Muse"></input>
+            <hr>
+            <div class="col-8">
+                <div class="right-justified">
+                    <button>Unsubscribe</button>
+                </div>
+                <table id="music-table">
+                    <tr>
+                        <td>Artist</td>
+                        <td>Albums Checked</td>
+                    </tr>
+                    <tr>
+                        <td>Muse</td>
+                        <td>5 of 10</td>
+                    </tr>
+                    <tr>
+                        <td>Imagine Dragons *selected*</td>
+                        <td>8 of 9</td>
+                    </tr>
+                </table>
             </div>
-            <div>
-                <select size=4>
-                    <option value="">--Select an Artist--</option>
-                    <option>Muse</option>
-                    <option>Museek</option>
-                    <option>Veridia</option>
-                </select>
+            <hr>
+            <div class="console">
+                Starting spot check...
+                <br>
+                Found 7 new albums!
             </div>
-            <div>
-                <button>Subscribe</button>
-            </div>
-        </div>
-        <hr>
-        <div class="col-8">
-            <div class="right-justified">
-                <button>Unsubscribe</button>
-            </div>
-            <table id="music-table">
-                <tr>
-                    <td>Artist</td>
-                    <td>Albums Checked</td>
-                </tr>
-                <tr>
-                    <td>Muse</td>
-                    <td>5 of 10</td>
-                </tr>
-                <tr>
-                    <td>Imagine Dragons *selected*</td>
-                    <td>8 of 9</td>
-                </tr>
-            </table>
-        </div>
-        <hr>
-        <div class="console">
-            Starting spot check...
-            <br>
-            Found 7 new albums!
-        </div>
-    </main>
-    <footer class="navbar">
-        <span>Nathan Bulloch</span>
-        <a class="nav-split" target="_blank" href="https://github.com/nbulloch/startup">GitHub</a>
-    </footer>
-</body>
+        </main>
+        <footer class="navbar">
+            <span>Nathan Bulloch</span>
+            <a class="nav-split" target="_blank" href="https://github.com/nbulloch/startup">GitHub</a>
+        </footer>
+    </body>
+</html>

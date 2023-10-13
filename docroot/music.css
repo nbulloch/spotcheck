@@ -1,0 +1,45 @@
+main > * {
+    padding: 15px;
+}
+
+.aside button {
+    width: 100%;
+    background-color: var(--theme-trim);
+}
+
+.console {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    opacity: 90%;
+
+    background: linear-gradient(transparent, var(--theme-highlight));
+}
+
+table {
+    background-color: white;
+    border-radius: 5px;
+}
+
+table.dataTable tbody tr.odd {
+    background-color: #ddd;
+}
+
+.aside {
+    display:flex;
+    flex-direction: column;
+    align-self: stretch;
+
+    justify-content: center;
+    align-items: center;
+
+    color: white;
+    background-color: var(--theme-highlight);
+}
+
+@media screen and (min-width: 600px) {
+    main {
+        display: grid;
+        grid-template-columns: max-content 1fr;
+    }
+}

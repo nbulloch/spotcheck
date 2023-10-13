@@ -1,51 +1,70 @@
 <!DOCTYPE html>
-<head>
-    <title>SpotCheck</title>
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
-    <link rel="stylesheet" href="spotcheck.css"></link>
-</head>
-<body>
-    <header>
-        <nav class="navbar">
-            <a href="music.html">Music<sup class="notify">2</sup></a>
-            <a href="manage.html">Manage</a>
-            <a class="nav-split" href="index.html">*Username*</a>
-        </nav>
-    </header>
-    <main>
-        <div>
-            <button>Mark Visited</button>
-            <button>Mark New Release</button>
-            <button>Mark Checked</button>
-        </div>
-        <div>
-            <table id="music-table">
-                <tr>
-                    <td>Artist</td>
-                    <td>Album</td>
-                    <td>Status</td>
-                </tr>
-                <tr>
-                    <td>Muse *selected*</td>
-                    <td><a target="_blank" href="https://open.spotify.com/album/5qK8S5JRF8au6adIVtBsmk?si=c31f1b9e40cd42e2">Will of the People</a></td>
-                    <td>Visited</td>
-                </tr>
-                <tr>
-                    <td>Imagine Dragons</td>
-                    <td><a target="_blank" href="https://open.spotify.com/album/0LLA5YL3g2UReWlP7nWqGh?si=WSfoHIn-TlqMOgCpND5t0Q">Night Visions</a></td>
-                    <td>New Release</td>
-                </tr>
+<html lang="en">
+    <head>
+        <title>SpotCheck</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+
+        <link rel="stylesheet" href="https://cdn.datatables.net/v/dt/jq-3.7.0/dt-1.13.6/sl-1.7.0/datatables.min.css"></link>
+        <link rel="stylesheet" href="spotcheck.css"></link>
+        <link rel="stylesheet" href="music.css"></link>
+
+        <script src="https://cdn.datatables.net/v/dt/jq-3.7.0/dt-1.13.6/sl-1.7.0/datatables.min.js"></script>
+        <script>
+            $(document).ready( function () {
+                let table = $('#music-table').DataTable({
+                    pagingType: 'simple',
+                    select: true,
+                    info: false,
+                    order: []
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <header>
+            <nav class="navbar">
+                <a href="music.html">Music<sup class="notify">2</sup></a>
+                <a href="manage.html">Manage</a>
+                <a class="nav-split" href="index.html">*Username*</a>
+            </nav>
+        </header>
+        <main>
+            <div class="aside">
+                <button>Mark Visited</button>
+                <button>Mark New Release</button>
+                <button>Mark Checked</button>
+            </div>
+            <table id="music-table" class="display compact">
+                <thead>
+                    <tr>
+                        <th>Artist</th>
+                        <th>Album</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Muse</td>
+                        <td><a target="_blank" href="https://open.spotify.com/album/5qK8S5JRF8au6adIVtBsmk?si=c31f1b9e40cd42e2">Will of the People</a></td>
+                        <td>Visited</td>
+                    </tr>
+                    <tr>
+                        <td>Imagine Dragons</td>
+                        <td><a target="_blank" href="https://open.spotify.com/album/0LLA5YL3g2UReWlP7nWqGh?si=WSfoHIn-TlqMOgCpND5t0Q">Night Visions</a></td>
+                        <td>New Release</td>
+                    </tr>
+                </tbody>
             </table>
-        </div>
-        <hr>
-        <div class="console">
-            Starting spot check...
-            <br>
-            Found 7 new albums!
-        </div>
-    </main>
-    <footer class="navbar">
-        <span>Nathan Bulloch</span>
-        <a class="nav-split" target="_blank" href="https://github.com/nbulloch/startup">GitHub</a>
-    </footer>
-</body>
+            <div class="console">
+                Starting spot check...
+                <br>
+                Found 7 new albums!
+            </div>
+        </main>
+        <footer class="navbar">
+            <span>Nathan Bulloch</span>
+            <a class="nav-split" target="_blank" href="https://github.com/nbulloch/startup">GitHub</a>
+        </footer>
+    </body>
+</html>

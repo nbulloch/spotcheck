@@ -6,6 +6,7 @@
 :root {
     --theme-bg: #b2d7bf;
     --theme-trim: #626262;
+    --theme-highlight: #888;
     --theme-primary: #1ed760; /* BS green #28a745 */
 }
 
@@ -57,12 +58,6 @@ header .navbar {
     }
 }
 
-@media (max-heigth: 500px) {
-    footer {
-        display: none;
-    }
-}
-
 body {
     margin: 0px;
     height: 100vh;
@@ -74,7 +69,7 @@ body {
 }
 
 main {
-    display: contents;
+    position: relative;
 }
 
 header, footer {
@@ -85,7 +80,7 @@ header, footer {
 
 button {
     color: inherit;
-    background-color: transparent;
+    background-color: var(--theme-highlight);
 
     padding: 5px;
 
@@ -100,3 +95,14 @@ button:hover {
 input, button {
     margin: 5px;
 }
+
+@media screen and (max-height: 400px) {
+    body {
+        grid-template-rows: 30px 1fr;
+    }
+
+    footer.navbar {
+        display: none !important;
+    }
+}
+
