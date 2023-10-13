@@ -51,3 +51,14 @@ Built an HTML structure for the Spot Check web app
 - **Database** - Each album and artist is represented textually with dummy data representing a database
 - **WebSocket** - Placeholder text representing a log of real-time server activity. Showing notification of new albums as a superscript on the 'Music' link
 
+## CSS Deliverable
+
+Styled each page to provide responsive layout and modern design.
+
+- **Layout** - Pages have a uniform header, footer, and main content area
+- **Navigation** - Split navigation pattern with the username on the right
+- **Responsive** - Footer is hidden for short viewports and the controls are only displayed in an aside for wide viewports
+- **Application** - Represented tables as styled DataTables (selection is already enabled)
+- **Text** - Loaded iosevka font to style text content. Placeholders are provided for interactive content
+- **Images** - Displayed the logo as a superscript on the login page
+
