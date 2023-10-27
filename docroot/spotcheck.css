@@ -2,14 +2,14 @@
     font-family: "iosevka";
     font-display: swap;
     font-weight: 400;
-    src: local("iosevka"), url("iosevka-regular.ttf") format("truetype"), url("iosevka-regular.woff2") format("woff2");
+    src: local("iosevka"), url("fonts/iosevka-regular.ttf") format("truetype"), url("fonts/iosevka-regular.woff2") format("woff2");
 }
 
 @font-face {
     font-family: "iosevka";
     font-display: swap;
     font-weight: 700;
-    src: local("iosevka"), url("iosevka-bold.ttf") format("truetype"), url("iosevka-bold.woff2") format("woff2");
+    src: local("iosevka"), url("fonts/iosevka-bold.ttf") format("truetype"), url("fonts/iosevka-bold.woff2") format("woff2");
 }
 
 :root {
@@ -17,6 +17,8 @@
     --theme-trim: #626262;
     --theme-highlight: #888;
     --theme-primary: #1ed760;
+    --theme-secondary: #00a5ff;
+    --theme-danger: #ff3757;
 }
 
 * {

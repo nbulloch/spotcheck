@@ -4,15 +4,16 @@
         <title>SpotCheck</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
-        <link rel="stylesheet" href="spotcheck.css"></link>
-        <link rel="stylesheet" href="login.css"></link>
+        <link rel="stylesheet" href="spotcheck.css">
+        <link rel="stylesheet" href="login.css">
+        <script src="login.js" ></script>
     </head>
     <body>
         <header>
             <nav class="navbar">
                 <a href="music.html">Music<sup class="notify">2</sup></a>
                 <a href="manage.html">Manage</a>
-                <a class="nav-split" href="index.html">*Username*</a>
+                <a class="nav-split" href="index.html">Login</a>
             </nav>
         </header>
         <main>
@@ -27,7 +28,8 @@
                         <label for="password">Password</label>
                         <input type="password" id="password"></input>
                     </div>
-                    <button type="submit">Login</button>
+                    <button type="button" onclick="register(this)">Register</button>
+                    <button type="button" onclick="login(this)">Login</button>
                 </form>
             </div>
         </main>

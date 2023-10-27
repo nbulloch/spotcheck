@@ -14,6 +14,10 @@
     margin: 15px 0;
 }
 
+.failed {
+    border-color: var(--theme-danger);
+}
+
 main {
     display: grid;
     grid: 1 / 1;
