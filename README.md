@@ -29,14 +29,14 @@ A possible database scheme for storing users and music:
 
 ### Technologies
 
-- **HTML** - Provide framework for 3 pages including **Login**, **Music**, **Manage**. Links between pages.
-- **CSS** - Style application for easy navigation and uniform feel.
-- **JavaScript** - Enable login button (any password allowed), add datatables with placeholder data.
-- **Service** - Connect to Spotify API and enable search functionality. Populate tables with artist data in memory.
-- **DB** - Build database schema and create functions for storing and retrieving data. Persistently store users, artists, and albums. At this point I could create a REST API for retrieving database entries.
-- **Login** - Check user input against stored users. Only allow *valid* passwords.
-- **WebSocket** - Push realtime alerts for new music. Possibly display server commands and asynchronous check progress.
-- **React** - Port web app to React framework.
+- **HTML** - Provide framework for 3 pages including **Login**, **Music**, **Manage**. Links between pages
+- **CSS** - Style application for easy navigation and uniform feel
+- **JavaScript** - Enable login button (any password allowed), add datatables with placeholder data
+- **Service** - Connect to Spotify API and enable search functionality. Populate tables with artist data in memory
+- **DB** - Build database schema and create functions for storing and retrieving data. Persistently store users, artists, and albums. At this point I could create a REST API for retrieving database entries
+- **Login** - Check user input against stored users. Only allow *valid* passwords
+- **WebSocket** - Push realtime alerts for new music. Possibly display server commands and asynchronous check progress
+- **React** - Port web app to React framework
 
 ## HTML Deliverable
 
@@ -53,7 +53,7 @@ Built an HTML structure for the Spot Check web app
 
 ## CSS Deliverable
 
-Styled each page to provide responsive layout and modern design.
+Styled each page to provide responsive layout and modern design
 
 - **Layout** - Pages have a uniform header, footer, and main content area
 - **Navigation** - Split navigation pattern with the username on the right
@@ -61,4 +61,13 @@ Styled each page to provide responsive layout and modern design.
 - **Application** - Represented tables as styled DataTables (selection is already enabled)
 - **Text** - Loaded iosevka font to style text content. Placeholders are provided for interactive content
 - **Images** - Displayed the logo as a superscript on the login page
+
+## JavaScript Deliverable
+
+Enabled buttons and interaction with table selection and stored user data locally stored
+
+- **Login** - Support for login includes registering a new user, logging in with a registered username and password, displaying the logged-in username
+- **Database** - Application data is stored in the browser's local storage and retrieved each time a page is loaded. There is not currently support for handling multiple users' data
+- **Websocket** - Functionality for websocket data (notification of new albums and console log) is simulated with a timeout loop and randomly generated data
+- **Application Logic** - Tables can be updated using the provided buttons. The selected row can be modified or hidden the Music page and rows can be added or removed on the manage page
 
