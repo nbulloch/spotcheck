@@ -29,12 +29,13 @@ function login(el) {
 
     users = localStorage.getItem("users");
 
-    if(users) {
-        users = JSON.parse(users);
-        let auth = users.some((user) => user.username == user_in && user.password == passwd_in);
-        if(!auth)
-            return flashBtn(el);
-    }
+    if(!users)
+        return flashBtn(el);
+
+    users = JSON.parse(users);
+    let auth = users.some((user) => user.username == user_in && user.password == passwd_in);
+    if(!auth)
+        return flashBtn(el);
 
     authenticate(user_in);
 }

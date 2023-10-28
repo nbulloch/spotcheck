@@ -24,9 +24,9 @@ tableOpts.data = data;
 
 let table;
 let tableID = "manage-table";
-window.onload = function(){
+$(document).ready(function(){
     table = new DataTable("#" + tableID, tableOpts);
-}
+});
 
 function search(el) {
     let artist = document.getElementById("artistName").value;

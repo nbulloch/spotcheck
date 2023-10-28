@@ -25,9 +25,9 @@ tableOpts.data = data;
 
 let table;
 let tableID = "music-table";
-window.onload = function(){
+$(document).ready(function(){
     table = new DataTable("#" + tableID, tableOpts);
-}
+});
 
 function markVisited(el) {
     selectDo(el, setStatus("Visited"));
