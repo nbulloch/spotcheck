@@ -11,73 +11,43 @@
         <link rel="stylesheet" href="manage.css"></link>
 
         <script src="https://cdn.datatables.net/v/dt/jq-3.7.0/dt-1.13.6/sl-1.7.0/datatables.min.js"></script>
-        <script>
-            $(document).ready( function () {
-                let table = $('#manage-table').DataTable({
-                    pagingType: 'simple',
-                    select: true,
-                    info: false,
-                    order: []
-                });
-            });
-        </script>
+        <script src="spotcheck.js"></script>
+        <script src="table.js"></script>
+        <script src="manage.js"></script>
     </head>
     <body>
         <header>
             <nav class="navbar">
                 <a href="music.html">Music<sup class="notify">2</sup></a>
                 <a href="manage.html">Manage</a>
-                <a class="nav-split" href="index.html">*Username*</a>
+                <div id="currentUser" class="nav-split"></div>
+                <a id="login" href="index.html">Login</a>
             </nav>
         </header>
         <main>
             <div class="aside">
                 <div>
-                    <button>Search</button>
+                    <input id="artistName" type="text" placeholder="Find Artist"></input>
                 </div>
                 <div>
-                    <input type="text" value="Muse"></input>
+                    <button onclick="search(this)">Search</button>
                 </div>
                 <div>
-                    <select size=4>
+                    <select id="artistSelect" size=4>
                         <option value="">--Select an Artist--</option>
-                        <option>Muse</option>
-                        <option>Museek</option>
-                        <option>Veridia</option>
                     </select>
                 </div>
                 <div>
-                    <button>Subscribe</button>
+                    <button onclick="subscribe(this)">Subscribe</button>
                 </div>
                 <hr>
                 <div>
-                    <button>Unsubscribe</button>
+                    <button onclick="unsubscribe(this)">Unsubscribe</button>
                 </div>
+                <div id="console"></div>
             </div>
-            <div>
-                <table id="manage-table">
-                    <thead>
-                        <tr>
-                            <td>Artist</td>
-                            <td>Albums Checked</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Muse</td>
-                            <td>5 of 10</td>
-                        </tr>
-                        <tr>
-                            <td>Imagine Dragons</td>
-                            <td>8 of 9</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="console">
-                Starting spot check...
-                <br>
-                Found 7 new albums!
+            <div class="content">
+                <table id="manage-table"></table>
             </div>
         </main>
         <footer class="navbar">
