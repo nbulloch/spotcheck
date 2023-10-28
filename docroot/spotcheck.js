@@ -62,13 +62,27 @@ let consoleMsgs = [
 function genConsole() {
     let msgInd = randInt(0, consoleMsgs.length - 1);
     addConsole(consoleMsgs[msgInd])
-
-    let timing = randInt(2000, 10000);
-    setTimeout(genConsole, timing);
 }
-
-genConsole();
 
 function setNotification(numReleases) {
-    
+    let notify = document.getElementById("notify");
+    notify.innerText = numReleases;
 }
+
+let totalReleases = 0;
+function genNotification() {
+    totalReleases += randInt(0, 3);
+    setNotification(totalReleases);
+}
+
+function genWebsocket() {
+    let timing = randInt(2000, 10000);
+    setTimeout(() => {
+        genConsole();
+        genNotification();
+
+        genWebsocket();
+    }, timing);
+}
+
+genWebsocket();
