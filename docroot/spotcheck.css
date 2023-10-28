@@ -50,6 +50,14 @@ header .navbar {
     font-weight: bold;
 }
 
+a.tbl-link:visited {
+    color: var(--theme-primary);
+}
+
+a.tbl-link {
+    text-decoration: inherit;
+}
+
 :is(header, footer) a {
     color: inherit;
     text-decoration: inherit;
@@ -94,8 +102,6 @@ button {
     background-color: var(--theme-highlight);
 
     padding: 5px;
-
-    border-radius: 8px;
     border: 2px solid var(--theme-primary);
 }
 
@@ -104,7 +110,20 @@ button:hover {
 }
 
 input, button {
+    border-radius: 5px;
     margin: 5px;
+}
+
+.failed {
+    border-color: var(--theme-danger);
+}
+
+input {
+    padding: 2px 5px;
+}
+
+input[type="password"] {
+    font-family: caption;
 }
 
 @media screen and (max-height: 400px) {

@@ -6,20 +6,22 @@
         <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
         <link rel="stylesheet" href="spotcheck.css">
         <link rel="stylesheet" href="login.css">
-        <script src="login.js" ></script>
+        <script src="spotcheck.js"></script>
+        <script src="login.js"></script>
     </head>
     <body>
         <header>
             <nav class="navbar">
                 <a href="music.html">Music<sup class="notify">2</sup></a>
                 <a href="manage.html">Manage</a>
-                <a class="nav-split" href="index.html">Login</a>
+                <div id="currentUser" class="nav-split"></div>
+                <a id="login" href="index.html">Login</a>
             </nav>
         </header>
         <main>
             <div class="login">
                 <h1>SpotCheck<sup><img src="favicon.png"></img></sup></h1>
-                <form method="get" action="music.html">
+                <form method="get">
                     <div>
                         <label for="username">Username</label>
                         <input type="text" id="username"></input>

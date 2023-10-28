@@ -7,13 +7,21 @@ main > * {
     background-color: var(--theme-trim);
 }
 
-.console {
+#console {
     position: absolute;
+    width: 25ch;
     bottom: 0;
     right: 0;
+    z-index: 10;
+
+    color: black;
     opacity: 90%;
 
     background: linear-gradient(transparent, var(--theme-highlight));
+}
+
+#console > * {
+    margin: 5px 10px;
 }
 
 table {
@@ -35,6 +43,11 @@ table.dataTable tbody tr.odd {
 
     color: white;
     background-color: var(--theme-highlight);
+}
+
+.content {
+    width: 95%;
+    justify-self: center;
 }
 
 @media screen and (min-width: 600px) {

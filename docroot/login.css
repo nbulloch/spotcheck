@@ -14,8 +14,8 @@
     margin: 15px 0;
 }
 
-.failed {
-    border-color: var(--theme-danger);
+#password, #username {
+    width: 60%;
 }
 
 main {
