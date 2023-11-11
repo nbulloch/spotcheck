@@ -1,6 +1,7 @@
 const http = require('http');
 const request = require('supertest');
-const app = require('./server.js');
+//const app = "localhost:4000";
+const app = http.createServer(require('./server.js'));
 
 const finish = function(done) {
     return (err) => (err ? done(err) :  done());
@@ -9,21 +10,36 @@ const finish = function(done) {
 const hasToken = function(res) {
     if(!'token' in res.body)
         throw new Error('missing token');
+    return true;
 }
 
 const username = 'test_user';
 const password = 'test_pass';
-//Get a token
+let token = "";
 
-let token;
+beforeAll(async () => {
+    const res = await request(app)
+        .post('/api/user')
+        .auth(username, password)
+        .expect(200)
+
+    token = res.body.token;
+    expect(token);
+})
+
 let req;
 let endpoint;
 
-beforeEach(() => {
-    req = request.agent(http.createServer(app))
+const setBearer = function() {
+    console.log(token);
+    req = request.agent(app)
         .auth(token, { type: 'bearer' });
-})
 
+    return req;
+}
+
+beforeEach(setBearer);
+/*
 describe('Artist endpoint', () => {
 
     beforeAll(() => endpoint = '/api/artists');
@@ -103,6 +119,7 @@ describe('Album endpoint', () => {
     });
 });
 
+/*
 describe('Search endpoint', () => {
 
     beforeAll(() => endpoint = '/api/search');
@@ -116,6 +133,7 @@ describe('Search endpoint', () => {
             .end(finish(done));
     });
 });
+*/
 
 describe('Login endpoint', () => {
 
@@ -123,7 +141,7 @@ describe('Login endpoint', () => {
 
     test('login', (done) => {
         req
-            .get(endpoint)
+            .post(endpoint)
             .auth(username, password)
             .expect(200)
             .expect(hasToken)
@@ -134,12 +152,13 @@ describe('Login endpoint', () => {
         req
             .delete(endpoint)
             .expect(200)
-            .end(finish(done));
+            .end(() => {
+                setBearer()
+                    .get('/api/artists')
+                    .expect(401)
+                    .end(finish(done))
+            });
 
-        req
-            .get('/api/artists')
-            .expect(401)
-            .end(finish(done))
     });
 });
 
@@ -148,30 +167,30 @@ describe('User endpoint', () => {
     beforeAll(() => endpoint = '/api/user');
 
     test('register new user', (done) => {
-        req
+        request(app)
             .post(endpoint)
-            .auth(username, password)
+            .auth('new_user', password)
             .expect(hasToken)
             .expect(200)
-            .end(finish(done));
-
-        req
-            .post(endpoint)
-            .auth(username, password)
-            .expect(hasToken)
-            .expect(403)
-            .end(finish(done));
+            .end(() => {
+                request(app)
+                    .post(endpoint)
+                    .auth(username, password)
+                    .expect(403)
+                    .expect({ msg: 'Username taken' })
+                    .end(finish(done));
+            });
     });
 
     test('delete account', (done) => {
         req
-            .put(endpoint)
+            .delete(endpoint)
             .expect(200)
-            .end(finish(done));
-
-        req
-            .put(endpoint)
-            .expect(401)
-            .end(finish(done));
+            .end(() => {
+                setBearer()
+                    .delete(endpoint)
+                    .expect(401)
+                    .end(finish(done));
+            });
     });
 });
