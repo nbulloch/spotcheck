@@ -62,7 +62,7 @@ apiRouter.post('/login', (req, res) => {
     let basic = auth.basicAuth(req, res);
     if(basic) {
         let [username, password] = basic;
-        if(authDB.checkLogin(username, password)) {
+    if(authDB.checkLogin(username, password)) {
             let token = authDB.createToken(username);
 
             res.send({ token: token });
@@ -84,7 +84,7 @@ authRouter.delete('/login', (req, res) => {
         res.status(400);
         res.send({ msg: 'Invalid user' });
     }
-})
+});
 
 apiRouter.get('/search/:query', (req, res) => {
     spotAPI.searchArtist(req.params.query).then((artists) => {
@@ -95,6 +95,65 @@ apiRouter.get('/search/:query', (req, res) => {
             res.status(500);
         }
     });
+});
+
+authRouter.put('/artists', async (req, res) => {
+    const id = req.body.artistId;
+    const user = req.user;
+    if(!authDB.isUser(user)) {
+        res.status(401);
+        res.send({ error: 'Unauthorized' });
+        return;
+    }
+
+    if(!id) {
+        res.status(400);
+        res.send({ error: 'Missing required artistId' });
+        return;
+    }
+
+    const albums = await spotAPI.getAlbums(id)
+    const artist = await spotAPI.getArtist(id)
+    if(!albums || !artist) {
+        res.status(400);
+        res.send({ error: 'Invalid artistId' });
+        return;
+    }
+
+    dataDB.addArtist(id, artist.name, albums);
+    dataDB.subscribe(user, id);
+    res.send({ success: true })
+});
+
+authRouter.get('/artists', (req, res) => {
+    const artists = dataDB.listArtists(req.user);
+    if(artists && artists.length) {
+        res.send(artists);
+    }else {
+        res.status(204)
+        res.end();
+    }
+});
+
+authRouter.delete('/artists', (req, res) => {
+    const id = req.body.artistId;
+    if(!id) {
+        res.status(400);
+        res.send({ error: 'Missing required artistId' });
+    }
+
+    const user = req.user;
+    if(!authDB.isUser(user)) {
+        res.status(401);
+        res.send({ error: 'Unauthorized' });
+        return;
+    }
+
+    if(dataDB.unsubscribe(user, id)) {
+        res.send({ success: true });
+    }else {
+        res.send({ success: false });
+    }
 });
 
 app.use('/api', apiRouter);

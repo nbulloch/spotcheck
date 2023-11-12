@@ -28,7 +28,6 @@ beforeAll(async () => {
 })
 
 let req;
-let endpoint;
 
 const setBearer = function() {
     req = request.agent(app)
@@ -41,78 +40,68 @@ beforeEach(setBearer);
 
 describe('Artist endpoint', () => {
 
-    beforeAll(() => endpoint = '/api/artists');
+    test('Artist', async () => {
+        let res = await setBearer()
+            .put('/api/artists')
+            .send({ artistId: '12Chz98pHFMPJEknJQMWvI' });
+        expect(res.status).toEqual(200);
 
-    test('add artist', (done) => {
-        req
-            .put(endpoint)
-            .send({ artistId: '12Chz98pHFMPJEknJQMWvI' })
-            .expect(200)
-            .end(finish(done));
+        res = await setBearer()
+                    .get('/api/artists');
+        expect(res.status).toEqual(200);
+        expect(res.body.length).toEqual(1);
 
-        req
-            .put(endpoint)
+        res = await setBearer()
+            .delete('/api/artists')
+            .send({ artistId: '12Chz98pHFMPJEknJQMWvI' });
+        expect(res.status).toEqual(200);
+
+        res = await setBearer()
+                    .get('/api/artists');
+        expect(res.status).toEqual(204);
+
+        res = await setBearer()
+            .delete('/api/artists')
+            .send({ artistId: 'not an id' });
+        expect(res.status).toEqual(200);
+        expect(res.body.success).toEqual(false);
+
+        res = await setBearer()
+            .put('/api/artists')
             .send({ artistId: 'not an id' })
-            .expect(400)
-            .expect({ msg: 'Invalid artistId' })
-            .end(finish(done))
-    });
-
-    test('list artists', (done) => {
-        req
-            .get(endpoint)
-            .expect(200)
-        // Check that artist was added
-            .end(finish(done));
-    });
-
-    test('delete artist', (done) => {
-        req
-            .delete(endpoint)
-            .send({ artistId: '12Chz98pHFMPJEknJQMWvI' })
-            .expect(200)
-        // Check that artist was deleted
-            .end(finish(done));
-
-        req
-            .delete(endpoint)
-            .send({ artistId: 'not an id' })
-            .expect(400)
-            .expect({ msg: 'Invalid artistId' })
-            .end(finish(done))
+        expect(res.status).toEqual(400);
+        expect(res.body.error).toEqual('Invalid artistId');
     });
 });
 
 /*
 describe('Album endpoint', () => {
 
-    beforeAll(() => endpoint = '/api/albums');
-
     test('update album', (done) => {
         req
-            .put(endpoint)
+            .put('/api/albums')
             .send({ albumId: '5qK8S5JRF8au6adIVtBsmk', status: 'Visited' })
             .expect(200)
             .end(finish(done));
 
         req
-            .put(endpoint)
+            .put('/api/albums')
             .send({ albumId: '5qK8S5JRF8au6adIVtBsmk', status: 'bad status' })
             .expect(400)
-            .expect({ msg: 'Invalid status' })
+            .expect({ error: 'Invalid status' })
             .end(finish(done));
 
         req
-            .put(endpoint)
+            .put('/api/albums')
             .send({ albumId: 'not an id', status: 'New Release' })
             .expect(400)
-            .expect({ msg: 'Invalid albumId' })
+            .expect({ error: 'Invalid albumId' })
             .end(finish(done));
     });
 
     test('list albums', (done) => {
         req
-            .get(endpoint)
+            .get('/api/albums')
             .expect(200)
         // Check updated
             .end(finish(done));
@@ -121,12 +110,9 @@ describe('Album endpoint', () => {
 */
 
 describe('Search endpoint', () => {
-
-    beforeAll(() => endpoint = '/api/search');
-
     test('search for an artist', (done) => {
         req
-            .get(endpoint + '/Muse')
+            .get('/api/search/Muse')
             .expect(200)
             .expect((res) => {
                 res.body.some((item) => item.name === 'Muse')
@@ -137,11 +123,9 @@ describe('Search endpoint', () => {
 
 describe('Login endpoint', () => {
 
-    beforeAll(() => endpoint = '/api/login');
-
     test('login', (done) => {
         req
-            .post(endpoint)
+            .post('/api/login')
             .auth(username, password)
             .expect(200)
             .expect(hasToken)
@@ -150,7 +134,7 @@ describe('Login endpoint', () => {
 
     test('logout', (done) => {
         req
-            .delete(endpoint)
+            .delete('/api/login')
             .expect(200)
             .end(() => {
                 setBearer()
@@ -164,17 +148,15 @@ describe('Login endpoint', () => {
 
 describe('User endpoint', () => {
 
-    beforeAll(() => endpoint = '/api/user');
-
     test('register new user', (done) => {
         request(app)
-            .post(endpoint)
+            .post('/api/user')
             .auth('new_user', password)
             .expect(hasToken)
             .expect(200)
             .end(() => {
                 request(app)
-                    .post(endpoint)
+                    .post('/api/user')
                     .auth(username, password)
                     .expect(403)
                     .expect({ msg: 'Username taken' })
@@ -184,11 +166,11 @@ describe('User endpoint', () => {
 
     test('delete account', (done) => {
         req
-            .delete(endpoint)
+            .delete('/api/user')
             .expect(200)
             .end(() => {
                 setBearer()
-                    .delete(endpoint)
+                    .delete('/api/user')
                     .expect(401)
                     .end(finish(done));
             });
