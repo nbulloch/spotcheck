@@ -2,7 +2,12 @@ const express = require('express');
 const app = express();
 
 const auth = require('./auth.js');
+const data = require('./data.js');
 const authDB = new auth();
+const dataDB = new data();
+
+const spotify = require('./spotify.js');
+const spotAPI = new spotify();
 
 app.use(express.json());
 
@@ -15,7 +20,6 @@ authRouter.use((req, res, next) => {
     let token = auth.parseAuth(req, 'Bearer');
     let user = authDB.getUser(token);
 
-    console.log(user + '@' + token);
     if(user) {
         req.user = user;
         req.token = token;
@@ -46,7 +50,6 @@ apiRouter.post('/user', (req, res) => {
 });
 
 authRouter.delete('/user', (req, res) => {
-    console.log(req.user);
     if(authDB.deleteUser(req.user)) {
         res.send({ msg: 'Success' });
     }else {
@@ -82,6 +85,17 @@ authRouter.delete('/login', (req, res) => {
         res.send({ msg: 'Invalid user' });
     }
 })
+
+apiRouter.get('/search/:query', (req, res) => {
+    spotAPI.searchArtist(req.params.query).then((artists) => {
+        if(artists) {
+            res.send(artists);
+        }else {
+            res.send({ msg: 'Spotify query failed' });
+            res.status(500);
+        }
+    });
+});
 
 app.use('/api', apiRouter);
 app.use('/api', authRouter);

@@ -31,7 +31,6 @@ let req;
 let endpoint;
 
 const setBearer = function() {
-    console.log(token);
     req = request.agent(app)
         .auth(token, { type: 'bearer' });
 
@@ -39,7 +38,7 @@ const setBearer = function() {
 }
 
 beforeEach(setBearer);
-/*
+
 describe('Artist endpoint', () => {
 
     beforeAll(() => endpoint = '/api/artists');
@@ -84,6 +83,7 @@ describe('Artist endpoint', () => {
     });
 });
 
+/*
 describe('Album endpoint', () => {
 
     beforeAll(() => endpoint = '/api/albums');
@@ -118,22 +118,22 @@ describe('Album endpoint', () => {
             .end(finish(done));
     });
 });
+*/
 
-/*
 describe('Search endpoint', () => {
 
     beforeAll(() => endpoint = '/api/search');
 
     test('search for an artist', (done) => {
         req
-            .get(endpoint)
-            .send({ artist: 'Muse' })
+            .get(endpoint + '/Muse')
             .expect(200)
-        // check search output
+            .expect((res) => {
+                res.body.some((item) => item.name === 'Muse')
+            })
             .end(finish(done));
     });
 });
-*/
 
 describe('Login endpoint', () => {
 
