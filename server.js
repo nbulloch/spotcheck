@@ -13,6 +13,11 @@ app.use(express.json());
 
 app.use(express.static('public'));
 
+function missing(res, label) {
+    res.status(400);
+    res.send({ error: `Missing required ${label}` });
+}
+
 const apiRouter = express.Router({ caseSensitive: true });
 const authRouter = express.Router({ caseSensitive: true });
 
@@ -44,8 +49,7 @@ apiRouter.post('/user', (req, res) => {
             res.send({ token: token });
         }
     }else {
-        res.status(400);
-        res.send({ msg: 'Basic authorization required' });
+        missing(res, 'Basic Authorization');
     }
 });
 
@@ -71,8 +75,7 @@ apiRouter.post('/login', (req, res) => {
             res.send({ msg: 'Unauthorized' });
         }
     }else {
-        res.status(400);
-        res.send({ msg: 'Basic authorization required' });
+        missing(res, 'Basic Authorization');
     }
 });
 
@@ -97,8 +100,13 @@ apiRouter.get('/search/:query', (req, res) => {
     });
 });
 
-authRouter.put('/artists', async (req, res) => {
+authRouter.put('/artists', (req, res) => {
     const id = req.body.artistId;
+    if(!id) {
+        missing(res, 'artistId');
+        return;
+    }
+
     const user = req.user;
     if(!authDB.isUser(user)) {
         res.status(401);
@@ -106,23 +114,22 @@ authRouter.put('/artists', async (req, res) => {
         return;
     }
 
-    if(!id) {
-        res.status(400);
-        res.send({ error: 'Missing required artistId' });
-        return;
-    }
+    spotAPI.getAlbums(id).then((albums) => {
+        if(!albums)
+            throw new Error('Invalid artistId');
 
-    const albums = await spotAPI.getAlbums(id)
-    const artist = await spotAPI.getArtist(id)
-    if(!albums || !artist) {
+        spotAPI.getArtist(id).then((artist) => {
+            if(!albums)
+                throw new Error('Invalid artistId');
+
+            dataDB.addArtist(id, artist.name, albums);
+            dataDB.subscribe(user, id);
+            res.send({ success: true });
+        })
+    }).catch((err) => {
         res.status(400);
         res.send({ error: 'Invalid artistId' });
-        return;
-    }
-
-    dataDB.addArtist(id, artist.name, albums);
-    dataDB.subscribe(user, id);
-    res.send({ success: true })
+    });
 });
 
 authRouter.get('/artists', (req, res) => {
@@ -138,8 +145,8 @@ authRouter.get('/artists', (req, res) => {
 authRouter.delete('/artists', (req, res) => {
     const id = req.body.artistId;
     if(!id) {
-        res.status(400);
-        res.send({ error: 'Missing required artistId' });
+        missing('artistId');
+        return;
     }
 
     const user = req.user;
@@ -153,6 +160,40 @@ authRouter.delete('/artists', (req, res) => {
         res.send({ success: true });
     }else {
         res.send({ success: false });
+    }
+});
+
+authRouter.get('/albums', (req, res) => {
+    const albums = dataDB.listAlbums(req.user);
+    if(albums && albums.length) {
+        res.send(albums);
+    }else {
+        res.status(204)
+        res.end();
+    }
+});
+
+authRouter.put('/albums', (req, res) => {
+    const id = req.body.albumId;
+    const status = req.body.status;
+    const user = req.user;
+
+    if(!id) {
+        missing(res, 'albumId');
+        return;
+    }else if(!status) {
+        missing(res, 'status');
+    }else if(!authDB.isUser(user)) {
+        res.status(401);
+        res.send({ error: 'Unauthorized' });
+    }else if(!dataDB.hasStatus(user, id)) {
+        res.status(400);
+        res.send({ error: 'Specified albumId does not exist' });
+    }else if(!dataDB.setStatus(user, id, status)) {
+        res.status(400);
+        res.send({ error: 'Invalid status' });
+    }else {
+        res.send({ success: true});
     }
 });
 

@@ -24,7 +24,7 @@ class data {
 
     updateArtist(id, name, albums) {
         this.addArtist(id, name, albums);
-        for(const [user, artistId] of this.#subs.entries()) {
+        for(const [user, artistId] of this.#subs) {
             if(artistId === id) {
                 this.subscribe(user, artistId);
             }
@@ -43,7 +43,7 @@ class data {
         let userSubs = this.#subs.get(user);
         if(!userSubs.includes(artistId)) {
             artist.albumIds.forEach((albumId) => {
-                if(!this.#hasStatus(user, albumId)){
+                if(!this.hasStatus(user, albumId)){
                     this.setStatus(user, albumId, 'New Release')
                 }
             });
@@ -113,6 +113,36 @@ class data {
         this.#albums.delete(id);
     }
 
+    listAlbums(user) {
+        const userStats = this.#stats.get(user);
+        if(!userStats)
+            return null;
+
+        const userArtists = this.#stats.get(user);
+        if(!userStats)
+            return null;
+
+        return userStats.map((stat) => {
+            const albumId = stat.albumId;
+            const status = stat.status;
+            const album = this.#albums.get(albumId);
+            let artistName = null;
+            for(const artist of this.#artists.values()) {
+                if(artist.albumIds.includes(albumId)) {
+                    artistName = artist.name;
+                    break;
+                }
+            }
+
+            return {
+                id: albumId,
+                artist: artistName,
+                album: album,
+                status: status
+            };
+        });
+    }
+
     setStatus(user, albumId, status) {
         if(['New Release', 'Visited', 'Checked'].includes(status)) {
             if(!this.#stats.has(user)) {
@@ -127,12 +157,13 @@ class data {
         return false;
     }
 
-    #hasStatus(user, albumId) {
-        const statusArray = this.#stats.get(user);
-        if(!statusArray)
+    hasStatus(user, albumId) {
+        const stat = this.#stats.get(user);
+
+        if(!stat)
             return false;
 
-        return statusArray.some((status) => status.albumId === albumId);
+        return stat.some((album) => album.albumId === albumId);
     }
 }
 

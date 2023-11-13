@@ -13,6 +13,9 @@ const hasToken = function(res) {
     return true;
 }
 
+const artistId = '12Chz98pHFMPJEknJQMWvI';
+const albumId = '5qK8S5JRF8au6adIVtBsmk';
+
 const username = 'test_user';
 const password = 'test_pass';
 let token = "";
@@ -27,37 +30,34 @@ beforeAll(async () => {
     expect(token);
 })
 
-let req;
+let req = request.agent(app);
 
 const setBearer = function() {
-    req = request.agent(app)
-        .auth(token, { type: 'bearer' });
-
-    return req;
+    return req.auth(token, { type: 'bearer' });
 }
-
-beforeEach(setBearer);
 
 describe('Artist endpoint', () => {
 
-    test('Artist', async () => {
-        let res = await setBearer()
+    test('add and remove', async () => {
+        let res;
+
+        res = await setBearer()
             .put('/api/artists')
-            .send({ artistId: '12Chz98pHFMPJEknJQMWvI' });
+            .send({ artistId: artistId })
         expect(res.status).toEqual(200);
 
         res = await setBearer()
-                    .get('/api/artists');
+            .get('/api/artists');
         expect(res.status).toEqual(200);
         expect(res.body.length).toEqual(1);
 
         res = await setBearer()
             .delete('/api/artists')
-            .send({ artistId: '12Chz98pHFMPJEknJQMWvI' });
+            .send({ artistId: artistId });
         expect(res.status).toEqual(200);
 
         res = await setBearer()
-                    .get('/api/artists');
+            .get('/api/artists');
         expect(res.status).toEqual(204);
 
         res = await setBearer()
@@ -74,40 +74,54 @@ describe('Artist endpoint', () => {
     });
 });
 
-/*
 describe('Album endpoint', () => {
+    const hasStatus = function(res, status) {
+        console.log(res.body);
+        return res.body.some((album) => {
+            return album.albumId === albumId && album.status == status
+        });
+    };
 
-    test('update album', (done) => {
-        req
+    test('update album', async () => {
+        let res;
+
+        //populate data
+        res = await setBearer()
+            .put('/api/artists')
+            .send({ artistId: artistId })
+        expect(res.status).toEqual(200);
+
+        res = await setBearer()
             .put('/api/albums')
-            .send({ albumId: '5qK8S5JRF8au6adIVtBsmk', status: 'Visited' })
-            .expect(200)
-            .end(finish(done));
+            .send({ albumId: albumId, status: 'Visited' });
+        expect(res.status).toEqual(200);
 
-        req
+        res = await setBearer().get('/api/albums');
+        expect(res.status).toEqual(200);
+        expect(hasStatus(res, 'Visited'));
+
+        res = await setBearer()
             .put('/api/albums')
-            .send({ albumId: '5qK8S5JRF8au6adIVtBsmk', status: 'bad status' })
-            .expect(400)
-            .expect({ error: 'Invalid status' })
-            .end(finish(done));
+            .send({ albumId: albumId, status: 'Checked' });
+        expect(res.status).toEqual(200);
 
-        req
+        res = await setBearer().get('/api/albums');
+        expect(res.status).toEqual(200);
+        expect(hasStatus(res, 'Checked'));
+
+        res = await setBearer()
+            .put('/api/albums')
+            .send({ albumId: albumId, status: 'bad status' })
+        expect(res.status).toEqual(400);
+        expect(res.body.error).toEqual('Invalid status');
+
+        res = await setBearer()
             .put('/api/albums')
             .send({ albumId: 'not an id', status: 'New Release' })
-            .expect(400)
-            .expect({ error: 'Invalid albumId' })
-            .end(finish(done));
-    });
-
-    test('list albums', (done) => {
-        req
-            .get('/api/albums')
-            .expect(200)
-        // Check updated
-            .end(finish(done));
+        expect(res.status).toEqual(400);
+        expect(res.body.error).toEqual('Specified albumId does not exist');
     });
 });
-*/
 
 describe('Search endpoint', () => {
     test('search for an artist', (done) => {
@@ -133,7 +147,7 @@ describe('Login endpoint', () => {
     });
 
     test('logout', (done) => {
-        req
+        setBearer()
             .delete('/api/login')
             .expect(200)
             .end(() => {
@@ -149,7 +163,7 @@ describe('Login endpoint', () => {
 describe('User endpoint', () => {
 
     test('register new user', (done) => {
-        request(app)
+        req
             .post('/api/user')
             .auth('new_user', password)
             .expect(hasToken)
@@ -165,7 +179,7 @@ describe('User endpoint', () => {
     });
 
     test('delete account', (done) => {
-        req
+        setBearer()
             .delete('/api/user')
             .expect(200)
             .end(() => {
