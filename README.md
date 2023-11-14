@@ -71,3 +71,12 @@ Enabled buttons and interaction with table selection and stored user data locall
 - **Websocket** - Functionality for websocket data (notification of new albums and console log) is simulated with a timeout loop and randomly generated data
 - **Application Logic** - Tables can be updated using the provided buttons. The selected row can be modified or hidden the Music page and rows can be added or removed on the manage page
 
+## Service Deliverable
+
+Created backend with authentication, in-memory data persistence and access to Spotify API
+
+- **Login** - Bearer tokens are created to uniquely identify authenticated users
+- **Static Files** - Webpages are served in express through middleware
+- **Endpoints** - Backend API with endpoints /artists, /albums, /login, /search, /user for login and manipulating data
+- **Frontend** - Buttons call backend API to expose functionality for finding artists, subscribing and marking visited and checked albums
+
