@@ -65,7 +65,8 @@ class data {
             const albumIds = artist.albumIds;
 
             const checked = this.#stats.get(user).filter((stat) => {
-                albumIds.includes(stat.albumId);
+                return albumIds.includes(stat.albumId) &&
+                    stat.status === 'Checked';
             });
 
             return {
@@ -78,31 +79,34 @@ class data {
     }
 
     unsubscribe(user, artistId) {
+        let success = false;
+
         let artistIds = this.#subs.get(user);
         if(artistIds) {
-            const filtered = artistIds.filter((id) => id !== artistId);
+            const filtered = artistIds.filter((id) => id !== artistId );
             if(filtered.length !== artistIds.length) {
                 this.#subs.set(user, filtered);
-                let stats = this.#stats.get(user);
-                if(stats) {
-                    artistIds.forEach((artistId) => {
-                        let albums = this.#artists.get(artistId);
-                        if(albums) {
-                            albums = albums.albumIds.forEach((albumId) => {
-                                stats = stats.filter((stat) => {
-                                    stat.albumId != albumId
-                                });
-                            });
-                        }
-                    });
-
-                    this.#stats.set(user, stats);
-                }
-                return true;
+                success = true;
             }
         }
 
-        return false;
+        let stats = this.#stats.get(user);
+        if(stats) {
+            const artist = this.#artists.get(artistId);
+            if(artist) {
+                const albumIds = artist.albumIds;
+                const filtered = stats.filter((stat) => {
+                    return !albumIds.includes(stat.albumId);
+                });
+
+                if(filtered.length != stats.length) {
+                    this.#stats.set(user, filtered);
+                    success = true;
+                }
+            }
+        }
+
+        return success;
     }
 
     addAlbum(id, name) {
@@ -149,8 +153,18 @@ class data {
                 this.#stats.set(user, []);
             }
             const statusArray = this.#stats.get(user);
+            const ind = statusArray.findIndex((stat) => {
+                return stat.albumId === albumId;
+            });
 
-            statusArray.push({albumId: albumId, status: status});
+            if(ind != -1) {
+                const stat = statusArray[ind];
+                stat.status = status;
+                statusArray[ind] = stat;
+            }else {
+                statusArray.push({albumId: albumId, status: status});
+            }
+
             return true;
         }
 

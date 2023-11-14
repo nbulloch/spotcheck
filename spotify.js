@@ -69,7 +69,8 @@ class spotify {
     }
 
     async getAlbums(artistId) {
-        const obj = await this.#get(`artists/${artistId}/albums`);
+        const url = `artists/${artistId}/albums?include_groups=album&limit=50`;
+        const obj = await this.#get(url);
 
         if(!obj)
             return null;

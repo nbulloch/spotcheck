@@ -1,46 +1,46 @@
-function register(el) {
+function basicAuth(user, pwd) {
+    return { 'Authorization': 'Basic ' + btoa(`${user}:${pwd}`) };
+}
+
+async function register(el) {
     let user_in = document.getElementById("username").value;
     let passwd_in = document.getElementById("password").value;
     if(user_in.length == 0 || passwd_in.length == 0)
         return flashBtn(el);
 
-    users = localStorage.getItem("users");
+    const res = await fetch('/api/user', {
+        method: 'POST',
+        headers: basicAuth(user_in, passwd_in)
+    });
 
-    if(users) {
-        users = JSON.parse(users);
-        let taken = users.some((user) => user.username == user_in);
-        if(taken)
-            return flashBtn(el);
-    }else {
-        users = [];
+    if(res.status != 200) {
+        return flashBtn(el);
     }
 
-    users.push({"username": user_in, "password": passwd_in});
-    localStorage.setItem("users", JSON.stringify(users));
-
-    authenticate(user_in);
+    const body = await res.json();
+    setToken(user_in, body.token);
 }
 
-function login(el) {
+async function login(el) {
     let user_in = document.getElementById("username").value;
     let passwd_in = document.getElementById("password").value;
     if(user_in.length == 0 || passwd_in.length == 0)
         return flashBtn(el);
 
-    users = localStorage.getItem("users");
+    const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: basicAuth(user_in, passwd_in)
+    });
 
-    if(!users)
+    if(res.status != 200)
         return flashBtn(el);
 
-    users = JSON.parse(users);
-    let auth = users.some((user) => user.username == user_in && user.password == passwd_in);
-    if(!auth)
-        return flashBtn(el);
-
-    authenticate(user_in);
+    const body = await res.json();
+    setToken(user_in, body.token);
 }
 
-function authenticate(username) {
-    localStorage.setItem("user", username);
+function setToken(user, token) {
+    localStorage.setItem("user", user);
+    localStorage.setItem("token", token);
     window.location = "music.html";
 }

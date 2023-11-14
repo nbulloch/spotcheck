@@ -1,7 +1,7 @@
 const http = require('http');
 const request = require('supertest');
 //const app = "localhost:4000";
-const app = http.createServer(require('./server.js'));
+const app = http.createServer(require('../server.js'));
 
 const finish = function(done) {
     return (err) => (err ? done(err) :  done());

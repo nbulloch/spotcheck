@@ -10,6 +10,18 @@ window.onload = function() {
     }
 }
 
+function bearer() {
+    const token = localStorage.getItem('token');
+
+    if(!token)
+        return null;
+
+    return {
+        'Authorization': 'Bearer ' + token,
+        'Content-Type': 'application/json'
+    };
+}
+
 function logout() {
     userEl = document.getElementById("currentUser");
     userEl.innerText = "";
@@ -17,7 +29,11 @@ function logout() {
     loginEl = document.getElementById("login");
     loginEl.innerText = "Login";
 
-    localStorage.removeItem("user");
+    const auth = bearer();
+    if(auth) {
+        fetch('/api/login', { method: "DELETE", headers: auth });
+        localStorage.removeItem("user");
+    }
 }
 
 function flashBtn(el) {

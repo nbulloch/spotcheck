@@ -200,7 +200,7 @@ authRouter.put('/albums', (req, res) => {
 app.use('/api', apiRouter);
 app.use('/api', authRouter);
 
-app.use(function (err, req, res, next) {
+app.use((err, req, res, next) => {
   console.error(err.stack)
   res.status(500).send('Something broke!')
 })

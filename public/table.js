@@ -6,7 +6,6 @@ window.tableOpts = {
 };
 
 function selectDo(el, fn) {
-    console.log(table);
     if(!table)
         return;
 

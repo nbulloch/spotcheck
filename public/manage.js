@@ -5,28 +5,48 @@ tableOpts.columns = [
 ];
 
 let artistCol = colToInd("Artist");
+let idCol = colToInd("artist_id");
 
 tableOpts.columnDefs = [{
     targets: artistCol,
     render: buildURL("https://open.spotify.com/artist/", colToInd("artist_id"))
 }];
 
-let data = localStorage.getItem("manage-table");
-if(data) {
-    data = JSON.parse(data);
-}else {
-    data = [
-        ["Muse",           "5 of 10", "12Chz98pHFMPJEknJQMWvI"],
-        ["Imagine Dragons","8 of 9",  "53XhwfbYqKCa1cC15pYq2q"]
-    ];
-}
-tableOpts.data = data;
+let data;
+getData().then((out) => {
+    data = out;
+    tableOpts.data = data;
+
+    $(document).ready(function(){
+        table = new DataTable("#" + tableID, tableOpts);
+    });
+});
 
 let table;
 let tableID = "manage-table";
-$(document).ready(function(){
-    table = new DataTable("#" + tableID, tableOpts);
-});
+
+async function getData() {
+    let data = [];
+
+    const auth = bearer();
+    if(auth) {
+        const res = await fetch('/api/artists', { headers: auth });
+
+        if(res.status == 200) {
+            data = await res.json();
+            data = data.map((artist) => [
+                artist.name,
+                artist.checkedAlbums + ' of ' + artist.totalAlbums,
+                artist.id
+            ]);
+            localStorage.setItem(tableID, data);
+        }
+    }else {
+        data = localStorage.getItem(tableID);
+    }
+
+    return data;
+}
 
 function search(el) {
     let artist = document.getElementById("artistName").value;
@@ -41,23 +61,52 @@ function search(el) {
         opts.item(1).remove();
     }
 
-    let nMatches = randInt(1, 6);
-
-    for(let i = 0; i < nMatches; i++) {
-        let optText = artist;
-        if(i != 0) {
-            optText += " Alt " + i;
+    fetch('/api/search/' + artist).then((res) => {
+        if(res.ok) {
+            res.json().then((body) => {
+                body.forEach((artist) => {
+                    selection.add(new Option(artist.name, artist.id));
+                });
+            });
         }
-        selection.add(new Option(optText));
-    }
+    });
 }
 
 function unsubscribe(el) {
-    selectDo(el, deleteRow(data));
+    const auth = bearer();
+    if(!auth) {
+        flashBtn(el);
+    }else {
+        selectDo(el, (selectedRow) => {
+            const rowInd = selectedRow.index();
+            const artistId = selectedRow.data()[idCol];
+
+            fetch('/api/artists', {
+                method: 'DELETE',
+                headers: auth,
+                body: JSON.stringify({ artistId: artistId })
+            }).then((res) => {
+                res.json().then((body) => {
+                    if(body.success) {
+                        selectedRow.remove();
+                        table.draw();
+
+                        data.splice(rowInd, 1);
+                    }
+                });
+            });
+        });
+    }
 }
 
 function subscribe(el) {
     let artist = document.getElementById("artistSelect");
+
+    const auth = bearer();
+    if(!auth) {
+        flashBtn(el);
+        return;
+    }
 
     artist = artist.value;
     if(artist.length == 0) {
@@ -66,23 +115,29 @@ function subscribe(el) {
     }
 
     //Enforce unique rows
-    //use id once we are calling API
     if(data.some((row) => {
-        console.log(row);
-        console.log(row[artistCol]);
-        console.log(artist);
-        return row[artistCol] === artist;
+        return row[idCol] === artist;
     })) {
         flashBtn(el);
         return;
     }
 
-    let totalAlbums = randInt(1, 15);
-    let numChecked = randInt(0, totalAlbums) + " of " + totalAlbums;
+    fetch('/api/artists', {
+        method: 'PUT',
+        headers: auth,
+        body: JSON.stringify({ artistId: artist })
+    }).then((res) => {
+        if(res.ok) {
+            getData().then((freshData) => {
+                data = freshData;
+                table.clear();
+                table.rows.add(freshData);
+                table.draw();
 
-    appendRow([artist, numChecked, "TODO artist_id"]);
-
-    storeTable();
+                storeTable();
+            });
+        }
+    });
 }
 
 function appendRow(rowData) {
