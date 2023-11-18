@@ -1,4 +1,6 @@
 const crypto = require('crypto');
+const bcrypt = require('bcrypt');
+const salt_rounds = 10;
 
 class auth {
     #tokens;
@@ -66,7 +68,9 @@ class auth {
     }
 
     createUser(username, password) {
-        this.#users.set(username, password);
+        bcrypt.hash(password, salt_rounds).then((hash) => {
+            this.#users.set(username, hash);
+        });
         return this.createToken(username);
     }
 
@@ -82,9 +86,9 @@ class auth {
     }
 
     checkLogin(username, password) {
-        let pwd = this.#users.get(username);
+        let hash = this.#users.get(username);
 
-        return pwd && pwd == password;
+        return hash && bcrypt.compareSync(password, hash);
     }
 }
 
