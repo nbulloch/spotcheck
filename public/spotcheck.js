@@ -33,6 +33,7 @@ function logout() {
     if(auth) {
         fetch('/api/login', { method: "DELETE", headers: auth });
         localStorage.removeItem("user");
+        localStorage.removeItem("token");
     }
 }
 

@@ -2,15 +2,9 @@ const crypto = require('crypto');
 const bcrypt = require('bcrypt');
 const salt_rounds = 10;
 
+const DB = require('./db.js');
+
 class auth {
-    #tokens;
-    #users;
-
-    constructor() {
-        this.#tokens = new Map();
-        this.#users = new Map();
-    }
-
     static parseAuth(req, type) {
         let auth = req.header('Authorization');
 
@@ -37,58 +31,54 @@ class auth {
 
     createToken(username) {
         let token = crypto.randomUUID();
-        this.#tokens.set(token, username);
+        DB.addToken(token, username);
         return token;
     }
 
-    clearTokens(username) {
-        for(const [token, user] of this.#tokens) {
-            if(user === username) {
-                this.#tokens.delete(token);
-            }
-        }
-    }
-
     deleteToken(token) {
-        this.#tokens.delete(token);
+        DB.deleteToken(token);
     }
 
     isUser(username) {
-        return this.#users.has(username);
+        return DB.isUser(username);
     }
 
     getUser(token) {
         if(!token)
             return null;
 
-        if(!this.#tokens.has(token))
-            return null;
-
-        return this.#tokens.get(token);
+        return DB.getUser(token);
     }
 
-    createUser(username, password) {
-        bcrypt.hash(password, salt_rounds).then((hash) => {
-            this.#users.set(username, hash);
-        });
-        return this.createToken(username);
+    async createUser(username, password) {
+        const salt = bcrypt.genSaltSync(salt_rounds);
+        console.log(password, salt);
+        const hash = bcrypt.hashSync(password, salt);
+
+        const added = await DB.addUser(username, hash);
+        if(added) {
+            return this.createToken(username);
+        }
+
+        return null;
     }
 
     deleteUser(user) {
-        if(isUser(user)) {
-            this.#users.delete(user);
-            this.clearTokens(user);
+        DB.isUser(user).then(exists => {
+            if(exists) {
+                DB.deleteUser(user);
+                return true;
+            }
 
-            return true;
-        }
-
-        return false;
+            return false;
+        });
     }
 
-    checkLogin(username, password) {
-        let hash = this.#users.get(username);
+    async checkLogin(username, password) {
+        let hash = await DB.getHash(username);
 
-        return hash && bcrypt.compareSync(password, hash);
+        return hash !== null &&
+            bcrypt.compareSync(password, hash);
     }
 }
 

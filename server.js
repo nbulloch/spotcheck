@@ -21,9 +21,9 @@ function missing(res, label) {
 const apiRouter = express.Router({ caseSensitive: true });
 const authRouter = express.Router({ caseSensitive: true });
 
-authRouter.use((req, res, next) => {
+authRouter.use(async (req, res, next) => {
     let token = auth.parseAuth(req, 'Bearer');
-    let user = authDB.getUser(token);
+    let user = await authDB.getUser(token);
 
     if(user) {
         req.user = user;
@@ -35,17 +35,16 @@ authRouter.use((req, res, next) => {
     }
 });
 
-apiRouter.post('/user', (req, res) => {
+apiRouter.post('/user', async (req, res) => {
     let basic = auth.basicAuth(req, res);
     if(basic) {
         let [username, password] = basic;
 
-        if(authDB.isUser(username)) {
+        const token = await authDB.createUser(username, password);
+        if(token === null) {
             res.status(403);
             res.send({ msg: 'Username taken' });
         }else {
-            let token = authDB.createUser(username, password);
-
             res.send({ token: token });
         }
     }else {
@@ -62,13 +61,13 @@ authRouter.delete('/user', (req, res) => {
     }
 })
 
-apiRouter.post('/login', (req, res) => {
+apiRouter.post('/login', async (req, res) => {
     let basic = auth.basicAuth(req, res);
     if(basic) {
         let [username, password] = basic;
-    if(authDB.checkLogin(username, password)) {
+        const authentic = await authDB.checkLogin(username, password);
+        if(authentic) {
             let token = authDB.createToken(username);
-
             res.send({ token: token });
         }else {
             res.status(401);
@@ -79,8 +78,10 @@ apiRouter.post('/login', (req, res) => {
     }
 });
 
-authRouter.delete('/login', (req, res) => {
-    if(authDB.isUser(req.user)) {
+authRouter.delete('/login', async (req, res) => {
+    const exists = await authDB.isUser(req.user);
+
+    if(exists) {
         authDB.deleteToken(req.token);
         res.send({ msg: 'Logged out' });
     }else {
