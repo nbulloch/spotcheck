@@ -80,3 +80,9 @@ Created backend with authentication, in-memory data persistence and access to Sp
 - **Endpoints** - Backend API with endpoints /artists, /albums, /login, /search, /user for login and manipulating data
 - **Frontend** - Buttons call backend API to expose functionality for finding artists, subscribing and marking visited and checked albums
 
+
+## Database Deliverable
+
+- **Login** - Passwords are hashed and salted before storage in MongoDB Atlas
+- **Data Manipulation** - Backend support for importing new artsists and albums, updating user album status and user artist subscriptions
+- **Data Persistence** - Artists and albums are stored globally, user subscriptions and album status are stored individually with id references to albums and artists.

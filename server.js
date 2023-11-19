@@ -185,7 +185,6 @@ authRouter.put('/albums', async (req, res) => {
     const status = req.body.status;
     const user = req.user;
 
-    console.log(user, id)
     if(!id) {
         missing(res, 'albumId');
         return;
