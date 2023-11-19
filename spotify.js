@@ -50,6 +50,7 @@ class spotify {
                 this.#getToken();
                 return this.#get(endpoint, false);
             }
+            console.log(obj, endpoint);
             return false;
         }
 
@@ -64,7 +65,7 @@ class spotify {
             return null;
 
         return obj.artists.items.map((artist) => {
-            return { id: artist.id, name: artist.name };
+            return { _id: artist.id, name: artist.name };
         });
     }
 
@@ -76,7 +77,7 @@ class spotify {
             return null;
 
         return obj.items.map((album) => {
-            return { id: album.id, name: album.name }
+            return { _id: album.id, name: album.name }
         });
     }
 

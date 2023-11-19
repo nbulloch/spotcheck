@@ -21,10 +21,18 @@ const password = 'test_pass';
 let token = "";
 
 beforeAll(async () => {
-    const res = await request(app)
-        .post('/api/user')
+    let res;
+
+    res = await request(app)
+        .post('/api/login')
         .auth(username, password)
-        .expect(200)
+
+    if(res.status != 200) {
+        res = await request(app)
+            .post('/api/user')
+            .auth(username, password)
+            .expect(200)
+    }
 
     token = res.body.token;
     expect(token);
@@ -76,7 +84,6 @@ describe('Artist endpoint', () => {
 
 describe('Album endpoint', () => {
     const hasStatus = function(res, status) {
-        console.log(res.body);
         return res.body.some((album) => {
             return album.albumId === albumId && album.status == status
         });

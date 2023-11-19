@@ -91,8 +91,16 @@ authRouter.delete('/login', async (req, res) => {
 });
 
 apiRouter.get('/search/:query', (req, res) => {
+    //TODO: check DB before spotify
+    //      Depends on background updates
     spotAPI.searchArtist(req.params.query).then((artists) => {
         if(artists) {
+            artists = artists.map((artist) => {
+                return {
+                    id: artist._id,
+                    name: artist.name
+                };
+            });
             res.send(artists);
         }else {
             res.send({ msg: 'Spotify query failed' });
@@ -120,7 +128,7 @@ authRouter.put('/artists', (req, res) => {
             throw new Error('Invalid artistId');
 
         spotAPI.getArtist(id).then((artist) => {
-            if(!albums)
+            if(!artist)
                 throw new Error('Invalid artistId');
 
             dataDB.addArtist(id, artist.name, albums);
@@ -133,8 +141,8 @@ authRouter.put('/artists', (req, res) => {
     });
 });
 
-authRouter.get('/artists', (req, res) => {
-    const artists = dataDB.listArtists(req.user);
+authRouter.get('/artists', async (req, res) => {
+    const artists = await dataDB.listArtists(req.user);
     if(artists && artists.length) {
         res.send(artists);
     }else {
@@ -157,16 +165,14 @@ authRouter.delete('/artists', (req, res) => {
         return;
     }
 
-    if(dataDB.unsubscribe(user, id)) {
-        res.send({ success: true });
-    }else {
-        res.send({ success: false });
-    }
+    const success = dataDB.unsubscribe(user, id).then((success) => {
+        res.send({ success: success });
+    });
 });
 
-authRouter.get('/albums', (req, res) => {
-    const albums = dataDB.listAlbums(req.user);
-    if(albums && albums.length) {
+authRouter.get('/albums', async (req, res) => {
+    const albums = await dataDB.listAlbums(req.user);
+    if(albums !== null && albums.length > 0) {
         res.send(albums);
     }else {
         res.status(204)
@@ -174,11 +180,12 @@ authRouter.get('/albums', (req, res) => {
     }
 });
 
-authRouter.put('/albums', (req, res) => {
+authRouter.put('/albums', async (req, res) => {
     const id = req.body.albumId;
     const status = req.body.status;
     const user = req.user;
 
+    console.log(user, id)
     if(!id) {
         missing(res, 'albumId');
         return;
@@ -187,14 +194,17 @@ authRouter.put('/albums', (req, res) => {
     }else if(!authDB.isUser(user)) {
         res.status(401);
         res.send({ error: 'Unauthorized' });
-    }else if(!dataDB.hasStatus(user, id)) {
-        res.status(400);
-        res.send({ error: 'Specified albumId does not exist' });
-    }else if(!dataDB.setStatus(user, id, status)) {
-        res.status(400);
-        res.send({ error: 'Invalid status' });
     }else {
-        res.send({ success: true});
+        const exists = await dataDB.hasStatus(user, id);
+        if(!exists) {
+            res.status(400);
+            res.send({ error: 'Specified albumId does not exist' });
+        }else if(!dataDB.setStatus(user, id, status)) {
+            res.status(400);
+            res.send({ error: 'Invalid status' });
+        }else {
+            res.send({ success: true});
+        }
     }
 });
 

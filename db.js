@@ -16,9 +16,10 @@ const db = client.db('spotcheck');
 const users = db.collection('users');
 const tokens = db.collection('tokens');
 
-//const artists = db.collection('artists');
-//const subs = db.collection('subs');
-//const stats = db.collection('status');
+const artists = db.collection('artists');
+const albums = db.collection('albums');
+const subs = db.collection('subs');
+const stats = db.collection('status');
 
 // Test that you can connect to the database
 (async function testConnection() {
@@ -48,7 +49,7 @@ async function doConfig(db) {
 }
 
 function addToken(token, username) {
-    tokens.insertOne({ _id: token, user: username });
+    tokens.insertOne({ _id: token, user: username, createdAt: new Date() });
 }
 
 function deleteToken(token) {
@@ -95,8 +96,150 @@ async function getHash(username) {
     return null;
 }
 
+function addArtist(artist) {
+    artists.findOne({ _id: artist._id }).then((stored) => {
+        if(stored === null) {
+            artists.insertOne(artist);
+        }
+    });
+}
+
+async function listArtists(user) {
+    const userSubs = await subs.find({ user: user }).toArray();
+    const list = userSubs.map(async (sub) => {
+        const id = sub.artistId;
+        const artist = await artists.findOne({ _id: id });
+
+        const artistAlbums = await albums.find({ artistId: id }).toArray();
+        const albumIds = artistAlbums.map((album) => {
+            return { albumId: album._id };
+        });
+
+        const checked = await stats.find({
+            user: user,
+            $or: albumIds,
+            status: 'Checked'
+        }).toArray();
+
+        return {
+            id: id,
+            name: artist.name,
+            checkedAlbums: checked.length,
+            totalAlbums: artistAlbums.length
+        };
+    });
+
+    return await Promise.all(list);
+}
+
+function updateArtist(artist) {
+    artists.updateOne({ _id: artist._id }, { $set: artist });
+}
+
+async function deleteArtist(artistId) {
+    artist.deleteOne({ _id: artistId });
+    const artistAlbums = await albums.find({ artistId: artistId });
+    artistAlbums.forEach((album) => {
+        stats.deleteMany({ albumId: album._id });
+    });
+
+    albums.deleteMany({ artistId: artistId });
+    subs.deleteMany({ artistId: artistId });
+}
+
+async function setAlbums(artistId, albumArray) {
+    albumArray.forEach(async (album) => {
+        const filter = { _id: album._id };
+        const stored = await albums.findOne(filter);
+
+        album.artistId = artistId;
+        if(stored === null) {
+            albums.insertOne(album);
+        }else {
+            albums.updateOne(filter, { $set: album });
+        }
+    });
+
+    const userSubs = await subs.find({ artistId: artistId }).toArray();
+
+    userSubs.forEach((sub) => refreshSub(sub.user, albumArray));
+}
+
+async function listAlbums(user) {
+    const userStats = await stats.find({ user: user }).toArray();
+    const list = userStats.map(async (stat) => {
+        const albumId = stat.albumId;
+        const status = stat.status;
+        const album = await albums.findOne({ _id: albumId });
+        const artist = await artists.findOne({ _id: album.artistId });
+
+        return {
+            id: albumId,
+            artist: artist.name,
+            album: album.name,
+            status: status
+        };
+    });
+
+    return await Promise.all(list);
+}
+
+function refreshSub(user, albumArr) {
+    albumArr.forEach(async (album) => {
+        const stat = await stats.findOne({ user: user, albumId: album._id });
+        if(stat === null) {
+            stats.insertOne({
+                user: user,
+                albumId: album._id,
+                status: "New Release"
+            });
+        }
+    });
+}
+
+async function subscribe(user, artistId) {
+    const sub = { user: user, artistId: artistId };
+    const stored = await subs.findOne(sub);
+    if(stored === null) {
+        subs.insertOne(sub);
+    }
+
+    const artistAlbums = await albums.find({ artistId: artistId }).toArray();
+    refreshSub(user, artistAlbums);
+}
+
+async function unsubscribe(user, artistId) {
+    const artistAlbums = await albums.find({ artistId: artistId }).toArray();
+    artistAlbums.forEach((album) => {
+        stats.deleteMany({ albumId: album._id });
+    });
+
+    const resp = await subs.deleteOne({ user: user, artistId: artistId });
+    return resp.deletedCount == 1;
+}
+
+async function hasStatus(user, albumId) {
+    const stat = await stats.findOne({ user: user, albumId: albumId });
+
+    return stat !== null;
+}
+
+function setStatus(user, albumId, status) {
+    stats.updateOne(
+        { user: user, albumId: albumId },
+        { $set: { status: status } },
+        { $upsert: true }
+    );
+}
+
 module.exports = {
-    getHash, isUser, deleteUser, addUser,
-    getUser, addToken, deleteToken
+    addUser, getHash, deleteUser, isUser,
+    addToken, getUser, deleteToken,
+
+    addArtist, listArtists, updateArtist, deleteArtist,
+    setAlbums, listAlbums,
+
+    subscribe, unsubscribe,
+    setStatus, hasStatus
 };
 

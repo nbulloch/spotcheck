@@ -52,7 +52,6 @@ class auth {
 
     async createUser(username, password) {
         const salt = bcrypt.genSaltSync(salt_rounds);
-        console.log(password, salt);
         const hash = bcrypt.hashSync(password, salt);
 
         const added = await DB.addUser(username, hash);
