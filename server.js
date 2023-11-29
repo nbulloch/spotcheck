@@ -134,7 +134,7 @@ authRouter.put('/artists', (req, res) => {
             dataDB.addArtist(id, artist.name, albums);
             dataDB.subscribe(user, id);
             res.send({ success: true });
-        })
+        });
     }).catch((err) => {
         res.status(400);
         res.send({ error: 'Invalid artistId' });
@@ -214,5 +214,18 @@ app.use((err, req, res, next) => {
   console.error(err.stack)
   res.status(500).send('Something broke!')
 })
+
+app.spotCheck = async function() {
+    const artists = await dataDB.allArtists();
+    const updated = artists.filter(async (artist) => {
+        const id = artist._id;
+
+        const albums = await spotAPI.getAlbums(id);
+        console.log(albums);
+        const updatedAlbums = await dataDB.updateArtist(id, artist.name, albums);
+        return updatedAlbums.length != 0;
+    });
+    return JSON.stringify(updated);
+}
 
 module.exports = app;

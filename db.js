@@ -137,7 +137,7 @@ function updateArtist(artist) {
 }
 
 async function deleteArtist(artistId) {
-    artist.deleteOne({ _id: artistId });
+    artists.deleteOne({ _id: artistId });
     const artistAlbums = await albums.find({ artistId: artistId });
     artistAlbums.forEach((album) => {
         stats.deleteMany({ albumId: album._id });
@@ -147,22 +147,27 @@ async function deleteArtist(artistId) {
     subs.deleteMany({ artistId: artistId });
 }
 
+function allArtists() {
+    return artists.find({}).toArray();
+}
+
 async function setAlbums(artistId, albumArray) {
-    albumArray.forEach(async (album) => {
-        const filter = { _id: album._id };
-        const stored = await albums.findOne(filter);
+    let storedAlbums = await albums.find({}).toArray();
+    storedAlbums = storedAlbums.map((album) => album._id);
 
-        album.artistId = artistId;
-        if(stored === null) {
-            albums.insertOne(album);
-        }else {
-            albums.updateOne(filter, { $set: album });
-        }
-    });
+    //No updates: Assuming metadata never changes for an id
+    const newAlbums = albumArray.filter((album) => !storedAlbums.includes(album._id));
+    if(newAlbums.length > 0) {
+        newAlbums.forEach((album) => {
+            album.artistId = artistId;
+            albums.insertOne(album)
+        });
 
-    const userSubs = await subs.find({ artistId: artistId }).toArray();
+        const userSubs = await subs.find({ artistId: artistId }).toArray();
+        userSubs.forEach((sub) => refreshSub(sub.user, newAlbums));
+    }
 
-    userSubs.forEach((sub) => refreshSub(sub.user, albumArray));
+    return newAlbums;
 }
 
 async function listAlbums(user) {
@@ -236,7 +241,7 @@ module.exports = {
     addUser, getHash, deleteUser, isUser,
     addToken, getUser, deleteToken,
 
-    addArtist, listArtists, updateArtist, deleteArtist,
+    addArtist, listArtists, updateArtist, deleteArtist, allArtists,
     setAlbums, listAlbums,
 
     subscribe, unsubscribe,

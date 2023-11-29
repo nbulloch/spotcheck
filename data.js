@@ -3,7 +3,7 @@ const DB = require('./db.js');
 class data {
     addArtist(id, name, albums) {// albums = [{id, name, artistId}]
         DB.addArtist({ _id: id, name: name });
-        DB.setAlbums(id, albums);
+        return DB.setAlbums(id, albums);
     }
 
     deleteArtist(id) {
@@ -12,7 +12,7 @@ class data {
 
     updateArtist(id, name, albums) {
         DB.updateArtist({ _id: id, name: name });
-        DB.setAlbums(id, albums);
+        return DB.setAlbums(id, albums);
     }
 
     subscribe(user, artistId) {
@@ -21,6 +21,10 @@ class data {
 
     listArtists(user) {
         return DB.listArtists(user);
+    }
+
+    allArtists() {
+        return DB.allArtists();
     }
 
     unsubscribe(user, artistId) {

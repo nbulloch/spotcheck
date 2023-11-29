@@ -1,12 +1,12 @@
 window.onload = function() {
-    let username = localStorage.getItem("user");
+    let username = localStorage.getItem('user');
     if(username) {
-        userEl = document.getElementById("currentUser");
+        userEl = document.getElementById('currentUser');
         userEl.innerText = username;
 
-        loginEl = document.getElementById("login");
+        loginEl = document.getElementById('login');
         loginEl.onclick = logout;
-        loginEl.innerText = "Logout";
+        loginEl.innerText = 'Logout';
     }
 }
 
@@ -45,6 +45,23 @@ function flashBtn(el) {
 
     return false;
 }
+
+const protocol = window.location.protocol == 'https:' ? 'wss:' : 'ws:';
+const socket = new WebSocket(`${protocol}//${window.location.host}/ws`);
+delete protocol;
+
+socket.onopen = (event) => {
+    addConsole('Connected to SpotCheck server');
+};
+
+socket.onmessage = (event) => {
+    const text = event.data;
+    addConsole(JSON.parse(text));
+};
+
+socket.onclose = (event) => {
+    addConsole('Disconnected from SpotCheck server');
+};
 
 //Simulate websocket
 function addConsole(msg) {
