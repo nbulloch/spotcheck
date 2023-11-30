@@ -83,6 +83,14 @@ Created backend with authentication, in-memory data persistence and access to Sp
 
 ## Database & Login Deliverables
 
-- **Login** - Passwords are hashed and salted before storage in MongoDB Atlas. Registration and login endpoints are backed by persistent storage.
+- **Login** - Passwords are hashed and salted before storage in MongoDB Atlas. Registration and login endpoints are backed by persistent storage
 - **Data Manipulation** - Backend support for importing new artsists and albums, updating user album status and user artist subscriptions
-- **Data Persistence** - Artists and albums are stored globally, user subscriptions and album status are stored individually with id references to albums and artists.
+- **Data Persistence** - Artists and albums are stored globally, user subscriptions and album status are stored individually with id references to albums and artists
+
+## Websocket Deliverable
+
+- **Backend** - Listens for websocket connections and maintains a list of active clients
+- **Frontend** - Connects to server endpoint
+- **Data** - Once a day the sever will send the message "Executing SpotCheck" to all clients then query spotify for the artists' albums to notify clients of new releases
+- **Display** - Clients see when the server checks for new updates and are notified of how many artists have released new albums since the last check
+
