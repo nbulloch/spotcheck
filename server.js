@@ -221,7 +221,6 @@ app.spotCheck = async function() {
         const id = artist._id;
 
         const albums = await spotAPI.getAlbums(id);
-        console.log(albums);
         const updatedAlbums = await dataDB.updateArtist(id, artist.name, albums);
         return updatedAlbums.length != 0;
     });

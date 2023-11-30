@@ -115,11 +115,14 @@ async function listArtists(user) {
             return { albumId: album._id };
         });
 
-        const checked = await stats.find({
-            user: user,
-            $or: albumIds,
-            status: 'Checked'
-        }).toArray();
+        let checked = [];
+        if(albumIds.length != 0) {
+            checked = await stats.find({
+                user: user,
+                $or: albumIds,
+                status: 'Checked'
+            }).toArray();
+        }
 
         return {
             id: id,

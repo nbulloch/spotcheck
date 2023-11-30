@@ -31,7 +31,8 @@ async function getData() {
 
     const auth = bearer();
     if(auth) {
-        const res = await fetch('/api/albums', { headers: auth });
+        const res = await fetch('/api/albums', { headers: auth })
+            .catch((e) => console.log(e));
 
         if(res.status == 200) {
             data = await res.json();
@@ -44,10 +45,15 @@ async function getData() {
 
             data = data.filter((row) => row[statusCol] !== 'Checked' );
 
-            localStorage.setItem(tableID, data);
+            localStorage.setItem(tableID, JSON.stringify(data));
+        }else if(res.status == 401) {
+            authExpired();
+        }else {
+            const storedData = localStorage.getItem(tableID);
+            if(storedData !== null) {
+                data = JSON.parse(storedData);
+            }
         }
-    }else {
-        data = localStorage.getItem(tableID);
     }
 
     return data;

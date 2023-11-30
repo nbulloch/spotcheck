@@ -30,7 +30,9 @@ async function getData() {
 
     const auth = bearer();
     if(auth) {
+        console.log(auth);
         const res = await fetch('/api/artists', { headers: auth });
+        console.log("Done");
 
         if(res.status == 200) {
             data = await res.json();
@@ -39,10 +41,16 @@ async function getData() {
                 artist.checkedAlbums + ' of ' + artist.totalAlbums,
                 artist.id
             ]);
-            localStorage.setItem(tableID, data);
+
+            localStorage.setItem(tableID, JSON.stringify(data));
+        }else if(res.status == 401) {
+            authExpired();
+        }else {
+            const storedData = localStorage.getItem(tableID);
+            if(storedData !== null) {
+                data = JSON.parse(storedData);
+            }
         }
-    }else {
-        data = localStorage.getItem(tableID);
     }
 
     return data;

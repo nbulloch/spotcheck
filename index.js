@@ -8,8 +8,10 @@ server = app.listen(port, () => {
 
 broadcast = serveWS(server);
 
-const dayMillis = 1500;//1000 * 60 * 60 * 24;
-setTimeout(async () => {
+const dayMillis = 1000 * 60 * 60 * 24;
+setInterval(async () => {
+    broadcast(JSON.stringify({ msg: 'Executing SpotCheck' }));
+
     const updates = await app.spotCheck();
     broadcast(updates);
 }, dayMillis);

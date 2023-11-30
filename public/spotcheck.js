@@ -7,6 +7,8 @@ window.onload = function() {
         loginEl = document.getElementById('login');
         loginEl.onclick = logout;
         loginEl.innerText = 'Logout';
+
+        setNotification();
     }
 }
 
@@ -37,6 +39,12 @@ function logout() {
     }
 }
 
+function authExpired() {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    window.location = 'index.html';
+}
+
 function flashBtn(el) {
     el.classList.add("failed");
     setTimeout(() => {
@@ -50,20 +58,17 @@ const protocol = window.location.protocol == 'https:' ? 'wss:' : 'ws:';
 const socket = new WebSocket(`${protocol}//${window.location.host}/ws`);
 delete protocol;
 
-socket.onopen = (event) => {
-    addConsole('Connected to SpotCheck server');
-};
-
 socket.onmessage = (event) => {
     const text = event.data;
-    addConsole(JSON.parse(text));
+    const obj = JSON.parse(text);
+    if(obj.msg === null) {
+        const numUpdated = obj.length;
+        addConsole(`Updated ${numUpdated} artists`);
+    }else {
+        addConsole(obj.msg);
+    }
 };
 
-socket.onclose = (event) => {
-    addConsole('Disconnected from SpotCheck server');
-};
-
-//Simulate websocket
 function addConsole(msg) {
     let console = document.getElementById("console");
     if(console) {
@@ -78,45 +83,13 @@ function addConsole(msg) {
     }
 }
 
-function randInt(min, max) {
-    return Math.floor(Math.random() * (max - min)) + min;
+function setNotification() {
+    let data = localStorage.getItem('music-table');
+    if(data !== null) {
+        data = JSON.parse(data);
+        const numReleases = data.filter((row) => row[2/*status*/] === "New Release").length;
+        let notify = document.getElementById("notify");
+        notify.innerText = numReleases;
+    }
 }
 
-let consoleMsgs = [
-    "Winning the lottery",
-    "Taking out the trash",
-    "Making dinner plans",
-    "Socketing the webs",
-    "Building an empire",
-    "Checking my spots",
-    "Taking a snack break",
-    "Waiting for pigs to fly"
-];
-
-function genConsole() {
-    let msgInd = randInt(0, consoleMsgs.length - 1);
-    addConsole(consoleMsgs[msgInd])
-}
-
-function setNotification(numReleases) {
-    let notify = document.getElementById("notify");
-    notify.innerText = numReleases;
-}
-
-let totalReleases = 0;
-function genNotification() {
-    totalReleases += randInt(0, 3);
-    setNotification(totalReleases);
-}
-
-function genWebsocket() {
-    let timing = randInt(2000, 10000);
-    setTimeout(() => {
-        genConsole();
-        genNotification();
-
-        genWebsocket();
-    }, timing);
-}
-
-genWebsocket();
