@@ -1,43 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE HTML>
+
+<html lang='en'>
     <head>
-        <title>SpotCheck</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
-        <link rel="stylesheet" href="spotcheck.css">
-        <link rel="stylesheet" href="login.css">
-        <script src="spotcheck.js"></script>
-        <script src="login.js"></script>
+
+        <title>SpotCheck</title>
     </head>
     <body>
-        <header>
-            <nav class="navbar">
-                <a href="music.html">Music<sup id="notify">0</sup></a>
-                <a href="manage.html">Manage</a>
-                <div id="currentUser" class="nav-split"></div>
-                <a id="login" href="index.html">Login</a>
-            </nav>
-        </header>
-        <main>
-            <div class="login">
-                <h1>SpotCheck<sup><img src="favicon.png"></img></sup></h1>
-                <form method="get">
-                    <div>
-                        <label for="username">Username</label>
-                        <input type="text" id="username"></input>
-                    </div>
-                    <div>
-                        <label for="password">Password</label>
-                        <input type="password" id="password"></input>
-                    </div>
-                    <button type="button" onclick="register(this)">Register</button>
-                    <button type="button" onclick="login(this)">Login</button>
-                </form>
-            </div>
-        </main>
-        <footer class="navbar">
-            <span>Nathan Bulloch</span>
-            <a class="nav-split" target="_blank" href="https://github.com/nbulloch/startup">GitHub</a>
-        </footer>
+        <noscript>Please enable JavaScript to run this app.</noscript>
+        <div id="root"></div>
+        <script type="module" src="/index.jsx"></script>
     </body>
 </html>

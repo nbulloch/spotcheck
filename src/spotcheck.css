@@ -50,6 +50,11 @@ header .navbar {
     font-weight: bold;
 }
 
+hr {
+    color: black;
+    width: 100%;
+}
+
 a.tbl-link:visited {
     color: var(--theme-primary);
 }
@@ -79,6 +84,9 @@ a.tbl-link {
 
 body {
     margin: 0px;
+}
+
+.body {
     height: 100vh;
 
     display: grid;
@@ -127,7 +135,7 @@ input[type="password"] {
 }
 
 @media screen and (max-height: 400px) {
-    body {
+    .body {
         grid-template-rows: 30px 1fr;
     }
 
