@@ -1,0 +1,34 @@
+{
+  "name": "spotcheck service",
+  "version": "1.0.0",
+  "description": "Backend for spotcheck web app",
+  "main": "index.js",
+  "scripts": {
+    "serve": "node index.js",
+    "test": "jest",
+    "testHandles": "jest --detectOpenHandles"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nbulloch/startup.git"
+  },
+  "keywords": [
+    "spotify"
+  ],
+  "author": "Nathan Bulloch",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nbulloch/startup/issues"
+  },
+  "homepage": "https://github.com/nbulloch/startup#readme",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "express": "^4.18.2",
+    "mongodb": "^6.3.0",
+    "ws": "^8.14.2"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^6.3.3"
+  }
+}

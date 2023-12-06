@@ -1,12 +1,11 @@
 {
   "name": "spotcheck",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A web utility for tracking spotify artists",
-  "main": "index.js",
   "scripts": {
-    "serve": "node index.js",
-    "test": "jest",
-    "testHandles": "jest --detectOpenHandles"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "repository": {
     "type": "git",
@@ -21,15 +20,7 @@
     "url": "https://github.com/nbulloch/startup/issues"
   },
   "homepage": "https://github.com/nbulloch/startup#readme",
-  "dependencies": {
-    "bcrypt": "^5.1.1",
-    "crypto": "^1.0.1",
-    "express": "^4.18.2",
-    "mongodb": "^6.3.0",
-    "ws": "^8.14.2"
-  },
   "devDependencies": {
-    "jest": "^29.7.0",
-    "supertest": "^6.3.3"
+    "vite": "^5.0.6"
   }
 }
