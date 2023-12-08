@@ -29,7 +29,10 @@ class httpClient {
         }
 
         if(this.authHeader) {
-            opts.headers = this.authHeader; // No other headers required
+            opts.headers = this.authHeader;
+            if('body' in opts) {
+                opts.headers['Content-Type'] = 'application/json';
+            }
         }
 
         const resp = await fetch(endpoint, opts);
@@ -38,10 +41,11 @@ class httpClient {
             this.callbacks[resp.status]();
         }
 
+        const obj = await resp.json();
         if(resp.status != 200 && resp.status != 204) {
-            return 'get error msg';
+            return obj.msg;
         }else {
-            return await resp.json();
+            return obj;
         }
     }
 }

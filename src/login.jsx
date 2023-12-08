@@ -34,7 +34,6 @@ export default function Login({ login, showError }) {
     const query = async function(type, fail) {
         const [status, body] = await postBasicAuth('/api/' + type, user, pwd);
         if(status != 200) {
-            console.log(body);
             if(!('msg' in body)) {
                 body.msg = 'Login failed';
             }

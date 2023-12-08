@@ -82,7 +82,7 @@ export default function App() {
         }
     }, [user, token]);
 
-    const loadData = function(endpoint) {
+    const loadData = function(endpoint, update) {
         const [data, setData] = React.useState();
         React.useEffect(() => {
             if(!token)
@@ -101,14 +101,21 @@ export default function App() {
             return () => {
                 ignore = true;
             };
-        }, [user, endpoint]);
+        }, [user, endpoint, update]);
         return [data, setData];
     }
 
-    const [music, setMusic] = loadData('/api/albums')
-    const [manage, setManage] = loadData('/api/artists')
+    const [getMusic, updateMusic] = React.useState(0);
+    const [getManage, updateManage] = React.useState(0);
+    const [music, setMusic] = loadData('/api/albums', getMusic);
+    const [manage, setManage] = loadData('/api/artists', getManage);
 
     const [notify, setNotify] = React.useState(0);
+
+    const putAlbum = (body) => client.getService('/api/albums', {
+            method: 'PUT',
+            body: JSON.stringify(body)
+        });
 
     React.useEffect(() => {
         if(music) {
@@ -118,7 +125,13 @@ export default function App() {
 
             setNotify(newMusic.length);
         }
-    }, [music])
+    }, [music]);
+
+    const musicPage = React.useMemo(() => {
+        return (
+            <Music data={ music } putAlbum={ putAlbum } setNotify={ setNotify } />
+        );
+    }, [music]);
 
     return (
         <div className='body'>
@@ -148,8 +161,10 @@ export default function App() {
             <Routes>
                 {token && (
                     <>
-                        <Route path='/music' element={ <Music /> }></Route>
-                        <Route path='/manage' element={<Manage />}></Route>
+                        <Route path='/music' element={ musicPage }></Route>
+                        <Route path='/manage' element={
+                            <Manage data={ manage } />
+                        }></Route>
                     </>
                 )}
                 <Route path='/' element={
