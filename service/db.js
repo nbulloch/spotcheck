@@ -178,13 +178,23 @@ async function listAlbums(user) {
     const list = userStats.map(async (stat) => {
         const albumId = stat.albumId;
         const status = stat.status;
+
+        let artistName = 'Unknown';
+        let albumName = 'Unknown';
         const album = await albums.findOne({ _id: albumId });
-        const artist = await artists.findOne({ _id: album.artistId });
+        if(album) {
+            albumName = album.name;
+
+            const artist = await artists.findOne({ _id: album.artistId });
+            if(artist) {
+                artistName = artist.name;
+            }
+        }
 
         return {
             id: albumId,
-            artist: artist.name,
-            album: album.name,
+            artist: artistName,
+            album: albumName,
             status: status
         };
     });

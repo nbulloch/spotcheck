@@ -1,6 +1,6 @@
 import React from 'react';
 
-export function Manage() {
+export default function Manage() {
     return (
         <div>Artists displayed here</div>
     );

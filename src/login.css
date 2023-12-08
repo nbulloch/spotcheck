@@ -18,7 +18,7 @@
     width: 60%;
 }
 
-main {
+main.center-layout {
     display: grid;
     grid: 1 / 1;
     place-items: center;

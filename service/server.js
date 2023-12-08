@@ -39,13 +39,21 @@ apiRouter.post('/user', async (req, res) => {
     let basic = auth.basicAuth(req, res);
     if(basic) {
         let [username, password] = basic;
-
-        const token = await authDB.createUser(username, password);
-        if(token === null) {
+        if(username.length === 0) {
             res.status(403);
-            res.send({ msg: 'Username taken' });
+            res.send({ msg: 'Username must not be empty' });
+        }else if(password.length < 5) {
+            res.status(403);
+            res.send({ msg: 'Password must be at least 5 characters' });
         }else {
-            res.send({ token: token });
+
+            const token = await authDB.createUser(username, password);
+            if(token === null) {
+                res.status(403);
+                res.send({ msg: 'Username taken' });
+            }else {
+                res.send({ token: token });
+            }
         }
     }else {
         missing(res, 'Basic Authorization');

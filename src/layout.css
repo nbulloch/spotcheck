@@ -1,4 +1,4 @@
-main > * {
+main.aside-layout > * {
     padding: 15px;
 }
 
@@ -51,7 +51,7 @@ table.dataTable tbody tr.odd {
 }
 
 @media screen and (min-width: 600px) {
-    main {
+    main.aside-layout {
         display: grid;
         grid-template-columns: max-content 1fr;
     }
