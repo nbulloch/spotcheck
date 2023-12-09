@@ -94,3 +94,10 @@ Created backend with authentication, in-memory data persistence and access to Sp
 - **Data** - Once a day the sever will send the message "Executing SpotCheck" to all clients then query spotify for the artists' albums to notify clients of new releases
 - **Display** - Clients see when the server checks for new updates and are notified of how many artists have released new albums since the last check
 
+## React Deliverable
+- **Bundled** - Using WebPack and Babel
+- **Components** - Buttons are implemented as components, Table component displays data (non-react DataTables), Notification badge is a component
+    - The notification reactivity causes datatables to reload as if new data was loaded (loses selection and page)
+- **Router** - Pages have a common header and footer with content populated by routes
+- **Hooks** - Hooks are used to keep the the correct user's data loaded, manage auth tokens, and keep the notification badge updated
+
