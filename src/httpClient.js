@@ -42,7 +42,8 @@ class httpClient {
         }
 
         const obj = await resp.json();
-        if(resp.status != 200 && resp.status != 204) {
+        const code = resp.status;
+        if(code != 200 && code != 204) {
             return obj.msg;
         }else {
             return obj;

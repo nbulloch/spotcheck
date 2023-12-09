@@ -25,24 +25,23 @@ let user = '';
 let pwd = '';
 
 export default function Login({ login, showError }) {
-    const [loginFailed, failLogin] = React.useState(false);
-    const [registerFailed, failRegister] = React.useState(false);
 
     const inputUser = (e) => user = e.target.value;
     const inputPass = (e) => pwd = e.target.value;
 
-    const query = async function(type, fail) {
+    const query = async function(type) {
         const [status, body] = await postBasicAuth('/api/' + type, user, pwd);
         if(status != 200) {
             if(!('msg' in body)) {
                 body.msg = 'Login failed';
             }
 
-            fail(true);
             showError(body.msg);
-        }else {
-            login(user, body.token);
+            return false;
         }
+
+        login(user, body.token);
+        return true;
     }
 
     return (
@@ -61,11 +60,9 @@ export default function Login({ login, showError }) {
                             onChange={inputPass}></input>
                     </div>
                     <Button text='Register'
-                        failState={ [registerFailed, failRegister] }
-                        onClick={ () => query('user', failRegister) } />
+                        onClick={ () => query('user') } />
                     <Button text='Login'
-                        failState={ [loginFailed, failLogin] }
-                        onClick={ () => query('login', failLogin) } />
+                        onClick={ () => query('login') } />
                 </form>
                 <div id='console'></div>
             </div>

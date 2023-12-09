@@ -9,10 +9,6 @@ let table;
 const setTable = (loadedTable) => table = loadedTable;
 
 export default function Music({ data, putAlbum, setNotify }) {
-    const [failNew, setFailNew] = React.useState(false);
-    const [failVisited, setFailVisited] = React.useState(false);
-    const [failChecked, setFailChecked] = React.useState(false);
-
     let tableData = [];
     if(data) {
         tableData = data.filter((album) => album.status !== 'Checked' );
@@ -39,26 +35,9 @@ export default function Music({ data, putAlbum, setNotify }) {
         render: buildURL('https://open.spotify.com/album/', colToInd(columns, 'album_id'))
     }];
 
-    function markVisited(el) {
-        const success = selectDo(table, el, setStatus('Visited'));
-        if(!success) {
-            setFailVisited(true);
-        }
-    }
-
-    function markNewRelease(el) {
-        const success = selectDo(table, el, setStatus('New Release'));
-        if(!success) {
-            setFailNew(true);
-        }
-    }
-
-    function markChecked(el) {
-        const success = selectDo(table, el, setStatus('Checked'));
-        if(!success) {
-            setFailChecked(true);
-        }
-    }
+    const markNewRelease = () => selectDo(table, setStatus('New Release'));
+    const markVisited = () => selectDo(table, setStatus('Visited'));
+    const markChecked = () => selectDo(table, setStatus('Checked'));
 
     function setStatus(val) {
         return (selectedRow) => {
@@ -92,12 +71,9 @@ export default function Music({ data, putAlbum, setNotify }) {
     return (
         <main className='aside-layout'>
             <div className='aside'>
-                <Button text='Mark New Release' onClick={ markNewRelease }
-                    failState={ [failNew, setFailNew] } />
-                <Button text='Mark Visited' onClick={ markVisited }
-                    failState={ [failVisited, setFailVisited] } />
-                <Button text='Mark Checked' onClick={ markChecked }
-                    failState={ [failChecked, setFailChecked] } />
+                <Button text='Mark New Release' onClick={ markNewRelease } />
+                <Button text='Mark Visited' onClick={ markVisited } />
+                <Button text='Mark Checked' onClick={ markChecked } />
                 <div id='console'></div>
             </div>
             <div className='content'>

@@ -1,29 +1,19 @@
 import React from 'react';
 
 //https://cdn.datatables.net/v/dt/jq-3.7.0/dt-1.13.6/sl-1.7.0/datatables.min.js
-import './libs/datatables.min';
+//import './libs/datatables.min';
 //https://cdn.datatables.net/v/dt/jq-3.7.0/dt-1.13.6/sl-1.7.0/datatables.min.css
 import './libs/datatables.min.css';
 
+const DataTable = window.DataTable;
 
 export function colToInd(columns, name) {
     return columns.findIndex((col) => col.title === name);
 }
 
-export function deleteRow(table, data) {
-    return (selectedRow) => {
-        let rowInd = selectedRow.index();
-
-        selectedRow.remove();
-        table.draw();
-
-        data.splice(rowInd, 1);
-    };
-}
-
-export function selectDo(table, el, fn) {
+export function selectDo(table, fn) {
     if(!table)
-        return;
+        return false;
 
     let selectedRow = table.row({ selected: true });
     if(selectedRow.length == 0) {
@@ -32,7 +22,6 @@ export function selectDo(table, el, fn) {
 
     return fn(selectedRow);
 }
-
 
 export function buildURL(link, dataCol) {
     return function(data, type, row) {

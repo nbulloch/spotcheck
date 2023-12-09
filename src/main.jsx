@@ -133,6 +133,16 @@ export default function App() {
         );
     }, [music]);
 
+    const managePage = React.useMemo(() => {
+        const refresh = () => {
+            updateMusic(getMusic + 1);
+            updateManage(getManage + 1);
+        }
+        return (
+            <Manage data={ manage } client={ client } refreshData={ refresh } />
+        );
+    }, [manage]);
+
     return (
         <div className='body'>
             <header>
@@ -162,9 +172,7 @@ export default function App() {
                 {token && (
                     <>
                         <Route path='/music' element={ musicPage }></Route>
-                        <Route path='/manage' element={
-                            <Manage data={ manage } />
-                        }></Route>
+                        <Route path='/manage' element={ managePage }></Route>
                     </>
                 )}
                 <Route path='/' element={

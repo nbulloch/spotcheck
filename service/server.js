@@ -117,7 +117,7 @@ apiRouter.get('/search/:query', (req, res) => {
     });
 });
 
-authRouter.put('/artists', (req, res) => {
+authRouter.put('/artists', async (req, res) => {
     const id = req.body.artistId;
     if(!id) {
         missing(res, 'artistId');
@@ -131,25 +131,28 @@ authRouter.put('/artists', (req, res) => {
         return;
     }
 
-    spotAPI.getAlbums(id).then((albums) => {
-        if(!albums)
-            throw new Error('Invalid artistId');
-
-        spotAPI.getArtist(id).then((artist) => {
-            if(!artist)
-                throw new Error('Invalid artistId');
-
-            dataDB.addArtist(id, artist.name, albums);
-            dataDB.subscribe(user, id);
-            res.send({ success: true });
-        });
-    }).catch((err) => {
+    const albums = await spotAPI.getAlbums(id);
+    if(!albums) {
         res.status(400);
         res.send({ error: 'Invalid artistId' });
-    });
+        return;
+    }
+
+    const artist = await spotAPI.getArtist(id);
+    if(!artist) {
+        res.status(400);
+        res.send({ error: 'Invalid artistId' });
+        return;
+    }
+
+    await dataDB.addArtist(id, artist.name, albums);
+    await dataDB.subscribe(user, id);
+    res.send({ success: true });
 });
 
 authRouter.get('/artists', async (req, res) => {
+    res.append('Cache-Control', 'no-store');
+
     const artists = await dataDB.listArtists(req.user);
     if(artists && artists.length) {
         res.send(artists);
@@ -159,7 +162,7 @@ authRouter.get('/artists', async (req, res) => {
     }
 });
 
-authRouter.delete('/artists', (req, res) => {
+authRouter.delete('/artists', async (req, res) => {
     const id = req.body.artistId;
     if(!id) {
         missing('artistId');
@@ -173,12 +176,13 @@ authRouter.delete('/artists', (req, res) => {
         return;
     }
 
-    const success = dataDB.unsubscribe(user, id).then((success) => {
-        res.send({ success: success });
-    });
+    const success = await dataDB.unsubscribe(user, id);
+    res.send({ success: success });
 });
 
 authRouter.get('/albums', async (req, res) => {
+    res.append('Cache-Control', 'no-store');
+
     const albums = await dataDB.listAlbums(req.user);
     if(albums !== null && albums.length > 0) {
         res.send(albums);
