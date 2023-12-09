@@ -1,3 +1,4 @@
 *.id
 auth/*
 node_modules
+dist
